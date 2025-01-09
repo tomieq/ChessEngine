@@ -38,6 +38,7 @@ public class NotationParser {
         let language: Language = txt.contains("H") || txt.contains("S") || txt.contains("W") || txt.contains("G") ? .polish : .english
         let parts = split(txt)
         for part in parts {
+            print("\(moveExecutor.chessboard.colorOnMove) makes move: \(part)")
             if isFinished(part) { break }
             let command = try parseCastling(part) ?? parseSingleMove(part, language: language)
             moveExecutor.process(command)
@@ -83,6 +84,9 @@ public class NotationParser {
             // it's a piece move
             to = BoardSquare(stringLiteral: part.subString(1, 3))
             type = ChessPieceType.make(letter: part.subString(0, 1), language: language) ?? .pawn
+            if type == .pawn {
+                column = BoardColumn(part.subString(0, 1))
+            }
         }
         guard let type = type, let to = to else {
             throw NotationParserError.parsingError("Invalid entry \(part)")
@@ -95,6 +99,9 @@ public class NotationParser {
             pieces = pieces.filter { $0.square.column == column }
         }
         guard pieces.count == 1, let piece = pieces.first else {
+            print("white: \(moveExecutor.chessboard.dump(color: .white))")
+            print("black: \(moveExecutor.chessboard.dump(color: .black))")
+            print("pieces: \(pieces)")
             throw NotationParserError.parsingError("Ambigious entry \(part)")
         }
         let move = ChessBoardMove(from: piece.square, to: to)

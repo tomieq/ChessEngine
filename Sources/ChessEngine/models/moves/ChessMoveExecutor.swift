@@ -23,7 +23,7 @@ public class ChessMoveExecutor {
         let color = chessboard.colorOnMove
         switch command {
         case .move(let move, let promotion):
-            print("\(color) move \(chessboard[move.from]!.type) \(move)")
+            print("\(color) moves \(chessboard[move.from]!.type) \(move)")
             var changes: [ChessMove.Change] = []
             // with promotion
             if let promotedType = promotion {
@@ -45,7 +45,7 @@ public class ChessMoveExecutor {
                                changes: changes,
                                status: chessboard.status))
         case .take(let move, let promotion):
-            print("\(chessboard[move.from]!) take \(chessboard[move.from]!.type) on \(move)")
+            print("\(chessboard[move.from]!.color) \(chessboard[move.from]!.type) from \(move.from) takes \(chessboard[move.from]!.type) on \(move.to)")
             var changes: [ChessMove.Change] = []
             if let removedPiece = chessboard[move.to] {
                 changes.append(.remove(removedPiece.type, removedPiece.color, from: move.to))
