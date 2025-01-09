@@ -22,7 +22,7 @@ public class NotationParser {
         self.moveExecutor = moveExecutor
     }
     
-    public func split(_ txt: String) -> [String] {
+    static public func split(_ txt: String) -> [String] {
         txt.pgnWithoutComments.replacingOccurrences(of: ".", with: ". ")
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { $0.isEmpty.not }
@@ -38,7 +38,7 @@ public class NotationParser {
     public func process(_ txt: String) throws {
         logger.i("parsing \(txt)")
         let language: Language = txt.contains("H") || txt.contains("S") || txt.contains("W") || txt.contains("G") ? .polish : .english
-        let parts = split(txt)
+        let parts = Self.split(txt)
         for part in parts {
             logger.i("\(moveExecutor.chessboard.colorOnMove) makes move: \(part)")
             if isFinished(part) { break }
