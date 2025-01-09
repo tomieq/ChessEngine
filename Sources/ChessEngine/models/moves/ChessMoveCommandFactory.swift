@@ -6,6 +6,7 @@
 //
 
 // ChessMoveCommandFactory validates and produces [ChessMoveCommand] out of UI requests
+import Logger
 
 public enum ChessMoveCommandFactoryError: Error {
     case invalidSquare
@@ -15,6 +16,7 @@ public enum ChessMoveCommandFactoryError: Error {
 }
 
 public class ChessMoveCommandFactory {
+    private let logger = Logger(ChessMoveCommandFactory.self)
     let chessboard: ChessBoard
     
     public init(chessboard: ChessBoard) {
@@ -23,20 +25,20 @@ public class ChessMoveCommandFactory {
     
     public func make(from: BoardSquare?, to: BoardSquare?) throws -> ChessMoveCommand {
         guard let from = from, let to = to else {
-            print("Invalid square")
+            logger.e("Invalid square")
             throw ChessMoveCommandFactoryError.invalidSquare
         }
         let move = ChessBoardMove(from: from, to: to)
         guard let piece = chessboard[from] else {
-            print("No piece at \(from)")
+            logger.e("No piece at \(from)")
             throw ChessMoveCommandFactoryError.noPiece(at: from)
         }
         guard piece.color == chessboard.colorOnMove else {
-            print("Cannot move with \(piece) as now only \(chessboard.colorOnMove) can move now")
+            logger.e("Cannot move with \(piece) as now only \(chessboard.colorOnMove) can move now")
             throw ChessMoveCommandFactoryError.colorOnMove(chessboard.colorOnMove)
         }
         guard piece.moveCalculator.possibleMoves.contains(to) else {
-            print("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
+            logger.e("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
             throw ChessMoveCommandFactoryError.canNotMove(type: piece.type, to: to)
         }
 
@@ -55,7 +57,7 @@ public class ChessMoveCommandFactory {
         let pawn = PawnUtils(square: piece.square, color: piece.color)
         if let enPassantSquare = (pawn.enPassantSquares.filter { $0 == move.to }.first),
            let taken = enPassantSquare.move(pawn.crawlingDirection.opposite) {
-            print("en passant move \(move)")
+            logger.i("en passant move \(move)")
             return .enPassant(move, taken: taken)
         }
         return nil

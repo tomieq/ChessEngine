@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Logger
 
 public struct BoardSquare {
     let column: BoardColumn
@@ -31,7 +32,7 @@ extension BoardSquare: ExpressibleByStringLiteral {
               let column = BoardColumn(firstLetter),
               let lastLetter = value.last,
               let row = Int("\(lastLetter)") else {
-            print("Invalid text address(\(value)) while creating BoardSquare")
+            Logger(BoardSquare.self).e("Invalid text address(\(value)) while creating BoardSquare")
             fatalError()
         }
         self.column = column

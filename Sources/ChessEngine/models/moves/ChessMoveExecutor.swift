@@ -8,8 +8,10 @@
 // ChessMoveExecutor updates the chessboard according to incoming ChessMoveCommand
 // It stores moves in order to be able ro reverse them
 // It also produces ChessMove events so external UI can be updated (moveListener)
+import Logger
 
 public class ChessMoveExecutor {
+    private let logger = Logger(ChessMoveExecutor.self)
     let chessboard: ChessBoard
     public var moveListener: ((ChessMove) -> Void)?
     private var notationFactory: NotationFactory
@@ -23,7 +25,7 @@ public class ChessMoveExecutor {
         let color = chessboard.colorOnMove
         switch command {
         case .move(let move, let promotion):
-            print("\(color) moves \(chessboard[move.from]!.type) \(move)")
+            logger.i("\(color) moves \(chessboard[move.from]!.type) \(move)")
             var changes: [ChessMove.Change] = []
             // with promotion
             if let promotedType = promotion {
@@ -45,7 +47,7 @@ public class ChessMoveExecutor {
                                changes: changes,
                                status: chessboard.status))
         case .take(let move, let promotion):
-            print("\(chessboard[move.from]!.color) \(chessboard[move.from]!.type) from \(move.from) takes \(chessboard[move.from]!.type) on \(move.to)")
+            logger.i("\(chessboard[move.from]!.color) \(chessboard[move.from]!.type) from \(move.from) takes \(chessboard[move.from]!.type) on \(move.to)")
             var changes: [ChessMove.Change] = []
             if let removedPiece = chessboard[move.to] {
                 changes.append(.remove(removedPiece.type, removedPiece.color, from: move.to))
@@ -97,7 +99,7 @@ public class ChessMoveExecutor {
     public func revert() {
         guard let move = chessboard.movesHistory.last else { return }
         chessboard.movesHistory.removeLast()
-        print("Reverted move \(move.notation)")
+        logger.i("Reverted move \(move.notation)")
         defer {
             chessboard.colorOnMove = chessboard.colorOnMove.other
         }

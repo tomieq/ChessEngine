@@ -66,7 +66,6 @@ class NotationFactory {
             notation.append("\(move.from.column.letter)x\(move.to)")
         }
         notation.append(chessBoard.status.notation)
-        print(notation)
         return notation
     }
 }

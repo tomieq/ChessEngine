@@ -10,12 +10,17 @@ let package = Package(
         .library(
             name: "ChessEngine",
             targets: ["ChessEngine"]),
+    ], dependencies: [
+        .package(url: "https://github.com/tomieq/Logger", .upToNextMajor(from: "1.0.2"))
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "ChessEngine"),
+            name: "ChessEngine",
+            dependencies: [
+                .product(name: "Logger", package: "Logger")
+            ]),
         .testTarget(
             name: "ChessEngineTests",
             dependencies: ["ChessEngine"]

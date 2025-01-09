@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import Logger
 
 class KnightMoveCalculator: MoveCalculator {
+    private let logger = Logger(KnightMoveCalculator.self)
     var moveCounter: Int = 0
     private var isAnalized = false
     private var calculatedMoves = CalculatedMoves.default
@@ -109,7 +111,7 @@ class KnightMoveCalculator: MoveCalculator {
                     possibleAttackers.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                        oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                        print("knight at \(square) is pinned by \(piece.square)")
+                        logger.i("knight at \(square) is pinned by \(piece.square)")
                         allowedSquares = []
                     }
                 }

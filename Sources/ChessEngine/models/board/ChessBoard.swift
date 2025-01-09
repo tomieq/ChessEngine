@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Logger
 
 typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
 public class ChessBoard {
+    private let logger = Logger(ChessBoard.self)
     public var colorOnMove: ChessPieceColor = .white
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
@@ -120,11 +122,11 @@ public class ChessBoard {
     public var status: ChessGameStatus {
         for color in ChessPieceColor.allCases {
             if isCheckMate(for: color) {
-                print("It is checkmate for \(color)")
+                logger.i("It is checkmate for \(color)")
                 return .checkmate(winner: color.other)
             }
             if isCheck(for: color) {
-                print("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.moveCalculator.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.moveCalculator.possibleMoves)" }.joined(separator: ", "))")
+                logger.i("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.moveCalculator.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.moveCalculator.possibleMoves)" }.joined(separator: ", "))")
                 return .check(attacker: color.other)
             }
         }
@@ -137,7 +139,7 @@ public class ChessBoard {
 
     @discardableResult
     public func setupGame() -> ChessBoard {
-        print("Setup new game")
+        logger.i("Setup new game")
         pieces.removeAll()
         colorOnMove = .white
         movesHistory = []

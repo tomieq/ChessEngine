@@ -8,12 +8,14 @@
 // NotationParser reads game notation moves and applies them to game
 
 import Foundation
+import Logger
 
 enum NotationParserError: Error {
     case parsingError(String)
 }
 
 public class NotationParser {
+    private let logger = Logger(NotationParser.self)
     private let moveExecutor: ChessMoveExecutor
 
     public init(moveExecutor: ChessMoveExecutor) {
@@ -34,11 +36,11 @@ public class NotationParser {
     }
 
     public func process(_ txt: String) throws {
-        print("parsing \(txt)")
+        logger.i("parsing \(txt)")
         let language: Language = txt.contains("H") || txt.contains("S") || txt.contains("W") || txt.contains("G") ? .polish : .english
         let parts = split(txt)
         for part in parts {
-            print("\(moveExecutor.chessboard.colorOnMove) makes move: \(part)")
+            logger.i("\(moveExecutor.chessboard.colorOnMove) makes move: \(part)")
             if isFinished(part) { break }
             let command = try parseCastling(part) ?? parseSingleMove(part, language: language)
             moveExecutor.process(command)
@@ -99,9 +101,10 @@ public class NotationParser {
             pieces = pieces.filter { $0.square.column == column }
         }
         guard pieces.count == 1, let piece = pieces.first else {
-            print("white: \(moveExecutor.chessboard.dump(color: .white))")
-            print("black: \(moveExecutor.chessboard.dump(color: .black))")
-            print("pieces: \(pieces)")
+            logger.i("white: \(moveExecutor.chessboard.dump(color: .white))")
+            logger.i("black: \(moveExecutor.chessboard.dump(color: .black))")
+            logger.i("pieces: \(pieces)")
+            logger.e("Ambigious entry \(part)")
             throw NotationParserError.parsingError("Ambigious entry \(part)")
         }
         let move = ChessBoardMove(from: piece.square, to: to)

@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import Logger
 
 class PawnMoveCalculator: MoveCalculator {
+    private let logger = Logger(PawnMoveCalculator.self)
     var moveCounter: Int = 0
     private var isAnalized = false
     private var calculatedMoves = CalculatedMoves.default
@@ -133,7 +135,7 @@ class PawnMoveCalculator: MoveCalculator {
                     possibleAttackers.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                        oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                        print("pawn at \(square) is pinned by \(piece.square)")
+                        logger.i("pawn at \(square) is pinned by \(piece.square)")
                         allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
                     }
                 }

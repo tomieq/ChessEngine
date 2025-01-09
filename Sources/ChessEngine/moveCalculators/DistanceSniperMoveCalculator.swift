@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import Logger
 
 class DistanceSniperMoveCalculator: MoveCalculator {
+    private let logger = Logger(DistanceSniperMoveCalculator.self)
     var moveCounter: Int = 0
     private var isAnalized = false
     private var calculatedMoves = CalculatedMoves.default
@@ -143,7 +145,7 @@ class DistanceSniperMoveCalculator: MoveCalculator {
                     possibleAttackers.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                        oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                        print("piece at \(square) is pinned by \(piece.square)")
+                        logger.i("piece at \(square) is pinned by \(piece.square)")
                         allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
                     }
                 }
