@@ -11,7 +11,7 @@ struct ChessBoardEvent {
     enum Change {
         case pieceAdded(at: [BoardSquare])
         case pieceMoved(ChessBoardMove)
-        case pieceRemoved(from: BoardSquare)
+        case pieceRemoved(from: [BoardSquare])
     }
     let change: Change
     let mode: ChessMoveMode

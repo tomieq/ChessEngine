@@ -59,12 +59,12 @@ public class ChessBoard {
     
     func remove(_ square: BoardSquare, _ mode: ChessMoveMode = .normal) {
         self.pieces = self.pieces.filter{ $0.square != square }
-        broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: square), mode: mode))
+        broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: [square]), mode: mode))
     }
     
     func remove(_ squares: BoardSquare..., mode: ChessMoveMode = .normal) {
         self.pieces = self.pieces.filter{ !squares.contains($0.square) }
-            squares.forEach { broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: $0), mode: mode))  }
+        broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: squares), mode: mode))
     }
 
     func move(_ move: ChessBoardMove, _ mode: ChessMoveMode = .normal) {
@@ -140,7 +140,7 @@ public class ChessBoard {
     @discardableResult
     public func setupGame() -> ChessBoard {
         logger.i("Setup new game")
-        pieces.removeAll()
+        removeAllPieces()
         colorOnMove = .white
         movesHistory = []
         let chessboardLoader = ChessBoardLoader(chessBoard: self)
@@ -149,8 +149,16 @@ public class ChessBoard {
             .load(.white, "a2 b2 c2 d2 e2 f2 g2 h2")
             .load(.black, "Ra8 Nb8 Bc8 Qd8 Ke8 Bf8 Ng8 Rh8")
             .load(.black, "a7 b7 c7 d7 e7 f7 g7 h7")
-        broadcast(event: ChessBoardEvent(change: .pieceAdded(at: []), mode: .normal))
+        broadcast(event: ChessBoardEvent(change: .pieceAdded(at: pieces.map { $0.square }), mode: .normal))
         return self
+    }
+    
+    public func removeAllPieces() {
+        let occupiedSquares = pieces.map { $0.square }
+        pieces.removeAll()
+        colorOnMove = .white
+        movesHistory = []
+        broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: occupiedSquares), mode: .normal))
     }
 
     func getPieces(color: ChessPieceColor) -> [ChessPiece] {
