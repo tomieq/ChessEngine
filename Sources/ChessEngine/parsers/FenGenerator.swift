@@ -13,11 +13,7 @@ public class FenGenerator {
     }
     
     public var fen: String {
-        var result = ""
-        // board piece positions
-        
-        result.append(fenPosition)
-        result.append(" \(chessboard.colorOnMove.fenLetter)")
+        var result = fenSimple
         // castling possibilities
         var castling = ""
         if let king = chessboard["e1"], king.type == .king, king.moveCalculator.moveCounter == 0 {
@@ -51,7 +47,11 @@ public class FenGenerator {
         result.append(" \(chessboard.pgn.count / 2 + 1)")
         return result
     }
-    
+        
+    public var fenSimple: String {
+        "\(fenPosition) \(chessboard.colorOnMove.fenLetter)"
+    }
+
     public var fenPosition: String {
         var position: [String] = []
         for row in (1...8).reversed() {
