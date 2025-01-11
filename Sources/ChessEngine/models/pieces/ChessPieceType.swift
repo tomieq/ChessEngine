@@ -72,7 +72,7 @@ extension ChessPieceType {
         }
     }
 
-    var plName: String {
+    public var plName: String {
         switch self {
         case .king:
             return "król"
@@ -108,7 +108,7 @@ extension ChessPieceType {
 }
 
 extension ChessPieceType {
-    static func make(letter: String, language: Language) -> ChessPieceType? {
+    public static func make(letter: String, language: Language) -> ChessPieceType? {
         switch language {
         case .english:
             return Self.allCases.first{ $0.enLetter.first == letter.first }
