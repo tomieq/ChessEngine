@@ -19,6 +19,19 @@ public struct BoardSquare {
         self.row = row
         self.column = column
     }
+    
+    public init?(_ value: String) {
+        guard value.count == 2,
+              let firstLetter = value.first,
+              let column = BoardColumn(firstLetter),
+              let lastLetter = value.last,
+              let row = Int("\(lastLetter)") else {
+            Logger(BoardSquare.self).e("Invalid text address(\(value)) while creating BoardSquare")
+            return nil
+        }
+        self.column = column
+        self.row = row
+    }
 }
 
 extension BoardSquare: Equatable {}
