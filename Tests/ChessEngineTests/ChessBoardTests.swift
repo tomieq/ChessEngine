@@ -81,5 +81,26 @@ class ChessBoardTests: XCTestCase {
         XCTAssertTrue(sut.isFree("d2"))
         XCTAssertFalse(sut.isFree("d3"))
     }
+    
+    func test_clone() {
+        let original = ChessBoard()
+        original.setupGame()
+        let fenGeneratorOriginal = FenGenerator(chessboard: original)
+        
+        let clone = original.clone
+        let fenGeneratorClone = FenGenerator(chessboard: clone)
+        
+        let originalFen = fenGeneratorOriginal.fen
+        XCTAssertEqual(originalFen, fenGeneratorClone.fen)
+        
+        // make move on clone and verify original did not change
+        clone.move(ChessBoardMove(from: "d2", to: "d4"))
+        XCTAssertTrue(clone.isFree("d2"))
+        XCTAssertFalse(clone.isFree("d4"))
+
+        XCTAssertFalse(original.isFree("d2"))
+        XCTAssertTrue(original.isFree("d4"))
+        XCTAssertNotEqual(originalFen, fenGeneratorClone.fen)
+    }
 }
 

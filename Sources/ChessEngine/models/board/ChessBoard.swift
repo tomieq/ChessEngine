@@ -161,7 +161,7 @@ public class ChessBoard {
         broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: occupiedSquares), mode: .normal))
     }
 
-    func getPieces(color: ChessPieceColor) -> [ChessPiece] {
+    public func getPieces(color: ChessPieceColor) -> [ChessPiece] {
         self.pieces.filter{ $0.color == color }
     }
 
@@ -170,5 +170,19 @@ public class ChessBoard {
             .filter{ $0.color == color }
             .map { "\($0.type.enLetter)\($0.square)" }
             .joined(separator: " ")
+    }
+}
+
+extension ChessBoard {
+    public var clone: ChessBoard {
+        let board = ChessBoard()
+        board.colorOnMove = self.colorOnMove
+        board.movesHistory = self.movesHistory
+        self.pieces.map {
+            $0.gamePiece
+        }.forEach {
+            board.add($0)
+        }
+        return board
     }
 }
