@@ -7,19 +7,16 @@
 
 import Foundation
 
+public struct Pinned {
+    let attacker: ChessPiece
+    let coveredVictim: ChessPiece
+}
+
 struct CalculatedMoves {
     let possibleMoves: [BoardSquare]
     let possibleVictims: [BoardSquare]
     let possibleAttackers: [BoardSquare]
     let defends: [BoardSquare]
     let defenders: [BoardSquare]
-    
-    
-    static var `default`: CalculatedMoves {
-        CalculatedMoves(possibleMoves: [],
-                        possibleVictims: [],
-                        possibleAttackers: [],
-                        defends: [],
-                        defenders: [])
-    }
+    let pinned: Pinned?
 }

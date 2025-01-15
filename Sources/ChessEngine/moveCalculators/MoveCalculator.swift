@@ -24,3 +24,33 @@ protocol MoveCalculator {
     // fields that defend this piece
     var defenders: [BoardSquare] { get }
 }
+
+protocol MoveCalculatorProvider {
+    func analize() -> CalculatedMoves
+}
+
+extension MoveCalculator where Self: MoveCalculatorProvider {
+    var possibleMoves: [BoardSquare] {
+        analize().possibleMoves
+    }
+
+    var possibleVictims: [BoardSquare] {
+        analize().possibleVictims
+    }
+    
+    var defends: [BoardSquare] {
+        analize().defends
+    }
+    
+    var defenders: [BoardSquare] {
+        analize().defenders
+    }
+    
+    var possibleAttackers: [BoardSquare] {
+        analize().possibleAttackers
+    }
+    
+    var pinned: Pinned? {
+        analize().pinned
+    }
+}

@@ -7,55 +7,9 @@
 
 import Foundation
 
-class KingMoveCalculator: MoveCalculator {
+class KingMoveCalculator: MoveCalculator, MoveCalculatorProvider {
     var moveCounter: Int = 0
-    private var isAnalized = false
-    private var calculatedMoves = CalculatedMoves.default
-    
-    var possibleMoves: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.possibleMoves
-        }
-    }
-
-    var possibleVictims: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.possibleVictims
-        }
-    }
-    
-    var defends: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.defends
-        }
-    }
-    
-    var defenders: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.defenders
-        }
-    }
-    
-    var possibleAttackers: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.possibleAttackers
-        }
-    }
+    private var calculatedMoves: CalculatedMoves?
     
     let chessBoard: ChessBoard
     private var square: BoardSquare
@@ -86,7 +40,7 @@ class KingMoveCalculator: MoveCalculator {
         default:
             break
         }
-        self.isAnalized = false
+        self.calculatedMoves = nil
     }
     
     private func attackersFor(square: BoardSquare) -> [BoardSquare] {
@@ -121,7 +75,10 @@ class KingMoveCalculator: MoveCalculator {
         return attackers
     }
 
-    private func analize() {
+    func analize() -> CalculatedMoves {
+        if let calculatedMoves = self.calculatedMoves {
+            return calculatedMoves
+        }
         var possibleMoves: [BoardSquare] = []
         var defends: [BoardSquare] = []
         let defenders: [BoardSquare] = []
@@ -157,13 +114,15 @@ class KingMoveCalculator: MoveCalculator {
                 possibleMoves.append(BoardSquare(.g, square.row)!)
             }
         }
-        
-        self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
-                                               possibleVictims: possibleVictims,
-                                               possibleAttackers: possibleAttackers,
-                                               defends: defends,
-                                               defenders: defenders)
-        self.isAnalized = true
+
+        let calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
+                                              possibleVictims: possibleVictims,
+                                              possibleAttackers: possibleAttackers,
+                                              defends: defends,
+                                              defenders: defenders,
+                                              pinned: nil)
+        self.calculatedMoves = calculatedMoves
+        return calculatedMoves
     }
 
     private func nearestPiece(in direction: MoveDirection, from square: BoardSquare) -> ChessPiece? {

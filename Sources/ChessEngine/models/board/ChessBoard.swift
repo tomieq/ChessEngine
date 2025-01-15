@@ -104,7 +104,7 @@ public class ChessBoard {
     }
 
     func isCheck(for color: ChessPieceColor) -> Bool {
-        if let king = king(color: color), !king.moveCalculator.possibleAttackers.isEmpty {
+        if let king = king(color: color), !king.possibleAttackers.isEmpty {
             return true
         }
         return false
@@ -112,7 +112,7 @@ public class ChessBoard {
     
     func isCheckMate(for color: ChessPieceColor) -> Bool {
         for piece in getPieces(color: color) {
-            if piece.moveCalculator.possibleMoves.count > 0 {
+            if piece.possibleMoves.count > 0 {
                 return false
             }
         }

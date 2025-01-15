@@ -8,56 +8,10 @@
 import Foundation
 import Logger
 
-class PawnMoveCalculator: MoveCalculator {
+class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
     private let logger = Logger(PawnMoveCalculator.self)
     var moveCounter: Int = 0
-    private var isAnalized = false
-    private var calculatedMoves = CalculatedMoves.default
-    
-    var possibleMoves: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.possibleMoves
-        }
-    }
-
-    var possibleVictims: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.possibleVictims
-        }
-    }
-    
-    var defends: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.defends
-        }
-    }
-    
-    var defenders: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.defenders
-        }
-    }
-    
-    var possibleAttackers: [BoardSquare] {
-        get {
-            if !isAnalized {
-                analize()
-            }
-            return calculatedMoves.possibleAttackers
-        }
-    }
+    private var calculatedMoves: CalculatedMoves?
     
     let chessBoard: ChessBoard
     private var square: BoardSquare
@@ -88,15 +42,19 @@ class PawnMoveCalculator: MoveCalculator {
         default:
             break
         }
-        self.isAnalized = false
+        self.calculatedMoves = nil
     }
     
-    private func analize() {
+    func analize() -> CalculatedMoves {
+        if let calculatedMoves = self.calculatedMoves {
+            return calculatedMoves
+        }
         var possibleMoves: [BoardSquare] = []
         var defends: [BoardSquare] = []
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
+        var pinned: Pinned?
         
         // find all knight attackers and defenders
         for position in square.knightMoves {
@@ -204,13 +162,14 @@ class PawnMoveCalculator: MoveCalculator {
                 possibleMoves = []
             }
         }
-        
-        self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
-                                               possibleVictims: possibleVictims,
-                                               possibleAttackers: possibleAttackers,
-                                               defends: defends,
-                                               defenders: defenders)
-        self.isAnalized = true
+        let calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
+                                              possibleVictims: possibleVictims,
+                                              possibleAttackers: possibleAttackers,
+                                              defends: defends,
+                                              defenders: defenders,
+                                              pinned: pinned)
+        self.calculatedMoves = calculatedMoves
+        return calculatedMoves
     }
 
     private func nearestPiece(in direction: MoveDirection) -> ChessPiece? {
