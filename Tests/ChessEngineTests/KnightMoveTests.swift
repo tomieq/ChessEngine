@@ -37,6 +37,9 @@ final class KnightMoveTests: MoveTests {
         XCTAssertEqual(possibleVictims(for: "f2").count, 0)
         XCTAssertEqual(possibleMoves(from: "f2").count, 0)
         XCTAssertEqual(possibleAttackers(for: "f2"), ["h4"])
+        let pinned = pinned(at: "f2")
+        XCTAssertEqual(pinned?.attacker.square, "h4")
+        XCTAssertEqual(pinned?.coveredVictim.square, "e1")
     }
     
     func test_movePinnedByRook() {
@@ -46,6 +49,9 @@ final class KnightMoveTests: MoveTests {
         XCTAssertEqual(possibleVictims(for: "d1").count, 0)
         XCTAssertEqual(possibleMoves(from: "d1").count, 0)
         XCTAssertEqual(possibleAttackers(for: "d1"), ["a1"])
+        let pinned = pinned(at: "d1")
+        XCTAssertEqual(pinned?.attacker.square, "a1")
+        XCTAssertEqual(pinned?.attacker.type, .rook)
     }
     
     func test_movePinnedByQueen() {
@@ -128,6 +134,24 @@ final class KnightMoveTests: MoveTests {
         let moves = possibleMoves(from: "d4")
         XCTAssertEqual(moves.count, 1)
         XCTAssertTrue(moves.contains("f3"))
+    }
+    
+    func test_queenPinnedByBishop() {
+        ChessBoardLoader(chessBoard: chessBoard)
+            .load(.white, "Qe1 Ke2 Nf2")
+            .load(.black, "Bh4")
+        let pinned = pinned(at: "f2")
+        XCTAssertEqual(pinned?.attacker.square, "h4")
+        XCTAssertEqual(pinned?.attacker.type, .bishop)
+        XCTAssertEqual(pinned?.coveredVictim.square, "e1")
+        XCTAssertEqual(pinned?.coveredVictim.type, .queen)
+    }
+    
+    func test_bishopPinnedByBishop() {
+        ChessBoardLoader(chessBoard: chessBoard)
+            .load(.white, "Be1 Ke2 Nf2")
+            .load(.black, "Bh4")
+        XCTAssertNil(pinned(at: "f2"))
     }
 }
 

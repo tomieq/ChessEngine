@@ -15,12 +15,14 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
     
     let chessBoard: ChessBoard
     private var square: BoardSquare
-    private var color: ChessPieceColor
+    private let color: ChessPieceColor
+    private let type: ChessPieceType
     private let longDistanceAttackDirections: [MoveDirection]
     
     init(for piece: DetachedChessPiece, on chessBoard: ChessBoard, longDistanceAttackDirections: [MoveDirection]) {
         self.square = piece.square
         self.color = piece.color
+        self.type = piece.type
         self.chessBoard = chessBoard
         self.longDistanceAttackDirections = longDistanceAttackDirections
         self.chessBoard.subscribe { [weak self] event in
@@ -102,9 +104,16 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                 } else {
                     possibleAttackers.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
-                       oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                        logger.i("piece at \(square) is pinned by \(piece.square)")
-                        allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
+                       oppositeDirectionPiece.color == self.color,
+                       oppositeDirectionPiece.type.weight > self.type.weight {
+                        logger.i("\(color) \(type) at \(square) is pinned by \(piece.square), covered piece: \(oppositeDirectionPiece)")
+                        
+                        if oppositeDirectionPiece.type == .king {
+                            allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
+                        }
+                        if piece.type.weight < oppositeDirectionPiece.type.weight {
+                            pinned = Pinned(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                        }
                     }
                 }
             }

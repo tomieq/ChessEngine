@@ -106,6 +106,11 @@ class BishopMoveTests: MoveTests {
         XCTAssertEqual(possibleAttackers(for: "d4"), ["b4"])
         XCTAssertEqual(defenders(for: "d4"), ["d1"])
         XCTAssertEqual(defended(from: "d4").count, 0)
+        let pinned = pinned(at: "d4")
+        XCTAssertEqual(pinned?.attacker.square, "b4")
+        XCTAssertEqual(pinned?.attacker.type, .rook)
+        XCTAssertEqual(pinned?.coveredVictim.square, "g4")
+        XCTAssertEqual(pinned?.coveredVictim.type, .king)
     }
     
     func test_bishopIsDefendedByTwoRooks() {
@@ -193,6 +198,17 @@ class BishopMoveTests: MoveTests {
         XCTAssertEqual(possibleMoves(from: "d8"), [])
         XCTAssertEqual(possibleMoves(from: "g7"), [])
         XCTAssertEqual(possibleMoves(from: "h7"), [])
+    }
+    
+    func test_QueenPinnedByRook() {
+        ChessBoardLoader(chessBoard: chessBoard)
+            .load(.white, "Qg4 Ka1 Bd4 Rd1")
+            .load(.black, "Ke8 Rb4")
+        let pinned = pinned(at: "d4")
+        XCTAssertEqual(pinned?.attacker.square, "b4")
+        XCTAssertEqual(pinned?.attacker.type, .rook)
+        XCTAssertEqual(pinned?.coveredVictim.square, "g4")
+        XCTAssertEqual(pinned?.coveredVictim.type, .queen)
     }
 }
 

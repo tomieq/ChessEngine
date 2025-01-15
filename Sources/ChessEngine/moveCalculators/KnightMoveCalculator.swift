@@ -15,11 +15,13 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
     
     let chessBoard: ChessBoard
     private var square: BoardSquare
-    private var color: ChessPieceColor
+    private let color: ChessPieceColor
+    private let type: ChessPieceType
     
     init(for piece: DetachedChessPiece, on chessBoard: ChessBoard) {
         self.square = piece.square
         self.color = piece.color
+        self.type = piece.type
         self.chessBoard = chessBoard
         self.chessBoard.subscribe { [weak self] event in
             self?.gameChanged(event)
@@ -68,9 +70,15 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                 } else {
                     possibleAttackers.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
-                       oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                        logger.i("knight at \(square) is pinned by \(piece.square)")
-                        allowedSquares = []
+                       oppositeDirectionPiece.color == self.color,
+                       oppositeDirectionPiece.type.weight > self.type.weight {
+                        logger.i("knight at \(square) is pinned by \(piece.square), covered piece: \(oppositeDirectionPiece)")
+                        if oppositeDirectionPiece.type == .king {
+                            allowedSquares = []
+                        }
+                        if piece.type.weight < oppositeDirectionPiece.type.weight {
+                            pinned = Pinned(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                        }
                     }
                 }
             }

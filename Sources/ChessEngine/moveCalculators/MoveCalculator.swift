@@ -23,6 +23,9 @@ protocol MoveCalculator {
     
     // fields that defend this piece
     var defenders: [BoardSquare] { get }
+
+    // tells whether this piece is pinned
+    var pinned: Pinned? { get }
 }
 
 protocol MoveCalculatorProvider {
