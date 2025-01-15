@@ -7,9 +7,9 @@
 
 import Foundation
 
-public struct Pinned {
-    let attacker: ChessPiece
-    let coveredVictim: ChessPiece
+public struct PinInfo {
+    public let attacker: ChessPiece
+    public let coveredVictim: ChessPiece
 }
 
 struct CalculatedMoves {
@@ -18,5 +18,5 @@ struct CalculatedMoves {
     let possibleAttackers: [BoardSquare]
     let defends: [BoardSquare]
     let defenders: [BoardSquare]
-    let pinned: Pinned?
+    let pinInfo: PinInfo?
 }

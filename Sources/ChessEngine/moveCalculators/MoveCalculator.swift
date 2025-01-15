@@ -25,7 +25,7 @@ protocol MoveCalculator {
     var defenders: [BoardSquare] { get }
 
     // tells whether this piece is pinned
-    var pinned: Pinned? { get }
+    var pinInfo: PinInfo? { get }
 }
 
 protocol MoveCalculatorProvider {
@@ -53,7 +53,7 @@ extension MoveCalculator where Self: MoveCalculatorProvider {
         analize().possibleAttackers
     }
     
-    var pinned: Pinned? {
-        analize().pinned
+    var pinInfo: PinInfo? {
+        analize().pinInfo
     }
 }

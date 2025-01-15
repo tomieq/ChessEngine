@@ -58,8 +58,8 @@ extension ChessPiece: MoveCalculator {
         moveCalculator.defenders
     }
     
-    public var pinned: Pinned? {
-        moveCalculator.pinned
+    public var pinInfo: PinInfo? {
+        moveCalculator.pinInfo
     }
 }
 

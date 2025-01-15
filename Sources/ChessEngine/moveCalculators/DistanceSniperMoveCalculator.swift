@@ -58,7 +58,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
-        var pinned: Pinned?
+        var pinInfo: PinInfo?
         var allowedDirections = self.longDistanceAttackDirections
         
         // find all knight attackers and defenders
@@ -112,7 +112,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                             allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
                         }
                         if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            pinned = Pinned(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                            pinInfo = PinInfo(attacker: piece, coveredVictim: oppositeDirectionPiece)
                         }
                     }
                 }
@@ -155,7 +155,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               possibleAttackers: possibleAttackers,
                                               defends: defends,
                                               defenders: defenders,
-                                              pinned: pinned)
+                                              pinInfo: pinInfo)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves
     }

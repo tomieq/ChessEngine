@@ -56,7 +56,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
-        var pinned: Pinned?
+        var pinInfo: PinInfo?
         
         var allowedSquares = square.knightMoves
         // check if move is pinned and update defenders and attackers
@@ -77,7 +77,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                             allowedSquares = []
                         }
                         if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            pinned = Pinned(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                            pinInfo = PinInfo(attacker: piece, coveredVictim: oppositeDirectionPiece)
                         }
                     }
                 }
@@ -151,7 +151,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               possibleAttackers: possibleAttackers,
                                               defends: defends,
                                               defenders: defenders,
-                                              pinned: pinned)
+                                              pinInfo: pinInfo)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves
     }

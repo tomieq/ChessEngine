@@ -33,8 +33,8 @@ class MoveTests: XCTestCase {
         chessBoard.piece(at: square)?.possibleAttackers ?? []
     }
     
-    func pinned(at square: BoardSquare?) ->Pinned? {
-        chessBoard.piece(at: square)?.pinned
+    func pinInfo(for square: BoardSquare?) ->PinInfo? {
+        chessBoard.piece(at: square)?.pinInfo
     }
 }
 
