@@ -24,7 +24,7 @@ protocol MoveCalculator {
     // fields that defend this piece
     var defenders: [BoardSquare] { get }
 
-    // tells whether this piece is pinned
+    // tells whether this piece is pinned (attacker's weight is less than covered weight)
     var pinInfo: PinInfo? { get }
 }
 

@@ -103,14 +103,14 @@ public class ChessBoard {
         self.pieces.first { $0.type == .king && $0.color == color }
     }
 
-    func isCheck(for color: ChessPieceColor) -> Bool {
-        if let king = king(color: color), !king.possibleAttackers.isEmpty {
+    func isInCheck(_ color: ChessPieceColor) -> Bool {
+        if let king = king(color: color), king.possibleAttackers.isEmpty.not {
             return true
         }
         return false
     }
     
-    func isCheckMate(for color: ChessPieceColor) -> Bool {
+    func isCheckMated(_ color: ChessPieceColor) -> Bool {
         for piece in getPieces(color: color) {
             if piece.possibleMoves.count > 0 {
                 return false
@@ -121,11 +121,11 @@ public class ChessBoard {
     
     public var status: ChessGameStatus {
         for color in ChessPieceColor.allCases {
-            if isCheckMate(for: color) {
-                logger.i("It is checkmate for \(color)")
+            if isCheckMated(color) {
+                logger.i("It is checkmate for \(color) is check mated")
                 return .checkmate(winner: color.other)
             }
-            if isCheck(for: color) {
+            if isInCheck(color) {
                 logger.i("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.moveCalculator.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.moveCalculator.possibleMoves)" }.joined(separator: ", "))")
                 return .check(attacker: color.other)
             }

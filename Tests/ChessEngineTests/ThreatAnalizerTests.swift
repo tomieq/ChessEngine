@@ -96,4 +96,20 @@ class ThreatAnalizerTests: MoveTests {
             XCTFail("Invalid thread type")
         }
     }
+    
+    func testPin() throws {
+        let fen = "r3kb1r/pp1q1ppp/4p3/1B1pP3/4nBb1/1QP5/PP1N1PPP/R3K2R b KQkq - 0 11"
+        let board = ChessBoard()
+        let analizer = ThreatAnalizer(chessboard: board)
+        let loader = FenLoader(boardLoader: ChessBoardLoader(chessBoard: board))
+        try loader.load(fen: fen)
+        let threats = analizer.analize(attackerColor: .white)
+        if case .pin(let attacker, let pinned, let protected) = threats.last {
+            XCTAssertEqual(attacker.square, "b5")
+            XCTAssertEqual(pinned.square, "d7")
+            XCTAssertEqual(protected.square, "e8")
+        } else {
+            XCTFail("Invalid thread type")
+        }
+    }
 }

@@ -6,8 +6,23 @@
 //
 
 public enum ChessThreat: Equatable {
+    case checkMate
     case fork(attacker: ChessPiece, victims: [ChessPiece])
+    case pin(attacker: ChessPiece, pinned: ChessPiece, protected: ChessPiece)
     case freePiece(attacker: ChessPiece, victim: ChessPiece)
+    
+    var value: Int {
+        switch self {
+        case .checkMate:
+            100
+        case .fork(let attacker, let victims):
+            victims.map { $0.type.weight }.min() ?? 0
+        case .pin(let attacker, let pinned, let protected):
+            pinned.type.weight
+        case .freePiece(let attacker, let victim):
+            1
+        }
+    }
 }
 
 public class ThreatAnalizer {
@@ -18,6 +33,9 @@ public class ThreatAnalizer {
     }
     
     public func analize(attackerColor: ChessPieceColor) -> [ChessThreat] {
+        if chessboard.isCheckMated(attackerColor.other) {
+            return [.checkMate]
+        }
         var threats: [ChessThreat] = []
         chessboard.getPieces(color: attackerColor).forEach { piece in
             let piecesUnderAttack = piece
@@ -28,6 +46,13 @@ public class ThreatAnalizer {
                 threats.append(.fork(attacker: piece, victims: piecesUnderAttack))
             } else if let attackedPiece = piecesUnderAttack.first {
                 threats.append(.freePiece(attacker: piece, victim: attackedPiece))
+            }
+        }
+        chessboard.getPieces(color: attackerColor.other).forEach { piece in
+            if let pinInfo = piece.pinInfo {
+                if pinInfo.attacker.type.weight < piece.type.weight {
+                    threats.append(.pin(attacker: pinInfo.attacker, pinned: piece, protected: pinInfo.coveredVictim))
+                }
             }
         }
         return threats
