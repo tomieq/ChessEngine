@@ -117,3 +117,22 @@ extension ChessPieceType {
         }
     }
 }
+
+extension ChessPieceType {
+    public var weight: Int {
+        switch self {
+        case .king:
+            100
+        case .queen:
+            9
+        case .rook:
+            5
+        case .bishop:
+            3
+        case .knight:
+            3
+        case .pawn:
+            1
+        }
+    }
+}
