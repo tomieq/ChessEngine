@@ -54,11 +54,11 @@ extension ChessPiece: MoveCalculator {
         moveCalculator.defends
     }
     
-    var defenders: [BoardSquare] {
+    public var defenders: [BoardSquare] {
         moveCalculator.defenders
     }
     
-    var pinned: Pinned? {
+    public var pinned: Pinned? {
         moveCalculator.pinned
     }
 }
