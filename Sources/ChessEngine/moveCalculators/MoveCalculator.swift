@@ -23,6 +23,9 @@ protocol MoveCalculator {
     
     // fields that defend this piece
     var defenders: [BoardSquare] { get }
+    
+    // fields that are controlled by this piece
+    var controlledSquares: [BoardSquare] { get }
 
     // tells whether this piece is pinned (attacker's weight is less than covered weight)
     var pinInfo: PinInfo? { get }
@@ -51,6 +54,10 @@ extension MoveCalculator where Self: MoveCalculatorProvider {
     
     var possibleAttackers: [BoardSquare] {
         analize().possibleAttackers
+    }
+    
+    var controlledSquares: [BoardSquare] {
+        analize().controlledSquares
     }
     
     var pinInfo: PinInfo? {

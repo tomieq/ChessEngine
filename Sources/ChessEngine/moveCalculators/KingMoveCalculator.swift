@@ -80,6 +80,7 @@ class KingMoveCalculator: MoveCalculator, MoveCalculatorProvider {
             return calculatedMoves
         }
         var possibleMoves: [BoardSquare] = []
+        var controlledSquares: [BoardSquare] = []
         var defends: [BoardSquare] = []
         let defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
@@ -100,6 +101,7 @@ class KingMoveCalculator: MoveCalculator, MoveCalculatorProvider {
             } else {
                 if attackersFor(square: position).isEmpty {
                     possibleMoves.append(position)
+                    controlledSquares.append(position)
                 }
             }
         }
@@ -120,6 +122,7 @@ class KingMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               possibleAttackers: possibleAttackers,
                                               defends: defends,
                                               defenders: defenders,
+                                              controlledSquares: controlledSquares,
                                               pinInfo: nil)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves

@@ -184,5 +184,31 @@ final class PawnMoveTests: MoveTests {
         XCTAssertTrue(moves.contains("d6"))
         //XCTAssertEqual(possibleAttackers(for: "f5"), ["e5"])
     }
+    
+    
+    
+    func test_controlledSquares() throws {
+        chessBoard.setupGame()
+        let factory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let executor = ChessMoveExecutor(chessboard: chessBoard)
+        
+        var controlled = chessBoard["d2"]!.controlledSquares
+        XCTAssertEqual(controlled.count, 2)
+        XCTAssertTrue(controlled.contains("c3"))
+        XCTAssertTrue(controlled.contains("e3"))
+        
+        var command = try factory.make(from: "d2", to: "d4")
+        executor.process(command)
+        controlled = chessBoard["d4"]!.controlledSquares
+        XCTAssertEqual(controlled.count, 2)
+        XCTAssertTrue(controlled.contains("c5"))
+        XCTAssertTrue(controlled.contains("e5"))
+        
+        command = try factory.make(from: "e7", to: "e5")
+        executor.process(command)
+        controlled = chessBoard["d4"]!.controlledSquares
+        XCTAssertEqual(controlled.count, 1)
+        XCTAssertTrue(controlled.contains("c5"))
+    }
 }
 

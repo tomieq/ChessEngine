@@ -15,11 +15,11 @@ public enum ChessThreat: Equatable {
         switch self {
         case .checkMate:
             100
-        case .fork(let attacker, let victims):
+        case .fork(_, let victims):
             victims.map { $0.type.weight }.min() ?? 0
-        case .pin(let attacker, let pinned, let protected):
+        case .pin(_, let pinned, _):
             pinned.type.weight
-        case .freePiece(let attacker, let victim):
+        case .freePiece(_, _):
             1
         }
     }

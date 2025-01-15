@@ -52,6 +52,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
             return calculatedMoves
         }
         var possibleMoves: [BoardSquare] = []
+        var controlledSquares: [BoardSquare] = []
         var defends: [BoardSquare] = []
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
@@ -128,6 +129,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                 }
             } else {
                 possibleMoves.append(position)
+                controlledSquares.append(position)
             }
         }
         // moves when my king is checked
@@ -140,10 +142,12 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                         forcedMoves.append(contentsOf: king.square.path(to: attackerSquare))
                     }
                     possibleMoves = possibleMoves.commonElements(with: forcedMoves)
+                    controlledSquares = controlledSquares.commonElements(with: forcedMoves)
                 }
             } else if king.moveCalculator.possibleAttackers.count > 1 {
                 // if king is atacked twice, you cannot cover, so it is king who must escape
                 possibleMoves = []
+                controlledSquares = []
             }
         }
         let calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
@@ -151,6 +155,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               possibleAttackers: possibleAttackers,
                                               defends: defends,
                                               defenders: defenders,
+                                              controlledSquares: controlledSquares,
                                               pinInfo: pinInfo)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves

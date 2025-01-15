@@ -58,6 +58,10 @@ extension ChessPiece: MoveCalculator {
         moveCalculator.defenders
     }
     
+    public var controlledSquares: [BoardSquare] {
+        moveCalculator.controlledSquares
+    }
+    
     public var pinInfo: PinInfo? {
         moveCalculator.pinInfo
     }

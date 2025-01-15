@@ -18,5 +18,6 @@ struct CalculatedMoves {
     let possibleAttackers: [BoardSquare]
     let defends: [BoardSquare]
     let defenders: [BoardSquare]
+    let controlledSquares: [BoardSquare]
     let pinInfo: PinInfo?
 }
