@@ -29,7 +29,7 @@ public class ChessMoveCommandFactory {
             throw ChessMoveCommandFactoryError.invalidSquare
         }
         let move = ChessBoardMove(from: from, to: to)
-        guard let piece = chessboard[from] else {
+        guard let piece = chessboard.piece(at: from) else {
             logger.e("No piece at \(from)")
             throw ChessMoveCommandFactoryError.noPiece(at: from)
         }
@@ -37,8 +37,8 @@ public class ChessMoveCommandFactory {
             logger.e("Cannot move with \(piece) as now only \(chessboard.colorOnMove) can move now")
             throw ChessMoveCommandFactoryError.colorOnMove(chessboard.colorOnMove)
         }
-        guard piece.moveCalculator.possibleMoves.contains(to) else {
-            logger.e("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
+        guard piece.possibleMoves.contains(to) else {
+            logger.e("\(piece) cannot move to \(to). It can move only to \(piece.possibleMoves)")
             throw ChessMoveCommandFactoryError.canNotMove(type: piece.type, to: to)
         }
 

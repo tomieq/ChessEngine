@@ -8,8 +8,8 @@
 import Foundation
 
 public struct PinInfo {
-    public let attacker: ChessPiece
-    public let coveredVictim: ChessPiece
+    public let attacker: ChessPieceBasic
+    public let coveredVictim: ChessPieceBasic
 }
 
 struct CalculatedMoves {

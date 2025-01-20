@@ -7,9 +7,9 @@
 
 public enum ChessThreat: Equatable {
     case checkMate
-    case fork(attacker: ChessPiece, victims: [ChessPiece])
-    case pin(attacker: ChessPiece, pinned: ChessPiece, protected: ChessPiece)
-    case freePiece(attacker: ChessPiece, victim: ChessPiece)
+    case fork(attacker: ChessPieceBasic, victims: [ChessPieceBasic])
+    case pin(attacker: ChessPieceBasic, pinned: ChessPieceBasic, protected: ChessPieceBasic)
+    case freePiece(attacker: ChessPieceBasic, victim: ChessPieceBasic)
     
     var value: Int {
         switch self {
@@ -40,18 +40,18 @@ public class ThreatAnalizer {
         chessboard.getPieces(color: attackerColor).forEach { piece in
             let piecesUnderAttack = piece
                 .possibleVictims
-                .compactMap { chessboard[$0] }
+                .compactMap { chessboard.piece(at: $0) }
                 .filter { piece.type.weight < $0.type.weight || $0.defenders.isEmpty }
             if piecesUnderAttack.count > 1 {
-                threats.append(.fork(attacker: piece, victims: piecesUnderAttack))
+                threats.append(.fork(attacker: piece.basic, victims: piecesUnderAttack.map{ $0.basic }))
             } else if let attackedPiece = piecesUnderAttack.first {
-                threats.append(.freePiece(attacker: piece, victim: attackedPiece))
+                threats.append(.freePiece(attacker: piece.basic, victim: attackedPiece.basic))
             }
         }
         chessboard.getPieces(color: attackerColor.other).forEach { piece in
             if let pinInfo = piece.pinInfo {
                 if pinInfo.attacker.type.weight < piece.type.weight {
-                    threats.append(.pin(attacker: pinInfo.attacker, pinned: piece, protected: pinInfo.coveredVictim))
+                    threats.append(.pin(attacker: pinInfo.attacker, pinned: piece.basic, protected: pinInfo.coveredVictim))
                 }
             }
         }

@@ -113,7 +113,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                             allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
                         }
                         if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            pinInfo = PinInfo(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                            pinInfo = PinInfo(attacker: piece.basic, coveredVictim: oppositeDirectionPiece.basic)
                         }
                     }
                 }
@@ -140,7 +140,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         if let king = chessBoard.king(color: color) {
             if king.moveCalculator.possibleAttackers.count == 1 {
                 // if king is atacked once, you can beat attacker or cover attack path
-                if let attackerSquare = king.moveCalculator.possibleAttackers.first, let attacker = chessBoard[attackerSquare] {
+                if let attackerSquare = king.moveCalculator.possibleAttackers.first, let attacker = chessBoard.piece(at: attackerSquare) {
                     var forcedMoves = [attackerSquare]
                     if attacker.longDistanceAttackDirections.isEmpty.not {
                         forcedMoves.append(contentsOf: king.square.path(to: attackerSquare))

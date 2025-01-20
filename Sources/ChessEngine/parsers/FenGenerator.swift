@@ -16,19 +16,19 @@ public class FenGenerator {
         var result = fenSimple
         // castling possibilities
         var castling = ""
-        if let king = chessboard["e1"], king.type == .king, king.moveCalculator.moveCounter == 0 {
-            if let rook = chessboard["h1"], rook.type == .rook, rook.moveCalculator.moveCounter == 0 {
+        if let king = chessboard["e1"], king.type == .king, king.moveCounter == 0 {
+            if let rook = chessboard["h1"], rook.type == .rook, rook.moveCounter == 0 {
                 castling.append("K")
             }
-            if let rook = chessboard["a1"], rook.type == .rook, rook.moveCalculator.moveCounter == 0 {
+            if let rook = chessboard["a1"], rook.type == .rook, rook.moveCounter == 0 {
                 castling.append("Q")
             }
         }
-        if let king = chessboard["e8"], king.type == .king, king.moveCalculator.moveCounter == 0 {
-            if let rook = chessboard["h8"], rook.type == .rook, rook.moveCalculator.moveCounter == 0 {
+        if let king = chessboard["e8"], king.type == .king, king.moveCounter == 0 {
+            if let rook = chessboard["h8"], rook.type == .rook, rook.moveCounter == 0 {
                 castling.append("k")
             }
-            if let rook = chessboard["a8"], rook.type == .rook, rook.moveCalculator.moveCounter == 0 {
+            if let rook = chessboard["a8"], rook.type == .rook, rook.moveCounter == 0 {
                 castling.append("q")
             }
         }
@@ -58,7 +58,7 @@ public class FenGenerator {
             var emptyCounter = 0
             var rowFen = ""
             for column in BoardColumn.allCases {
-                if let piece = chessboard[BoardSquare(column, row)] {
+                if let piece = chessboard.piece(at: BoardSquare(column, row)) {
                     if emptyCounter > 0 {
                         rowFen.append("\(emptyCounter)")
                         emptyCounter = 0
