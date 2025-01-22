@@ -148,7 +148,7 @@ class KingMoveCalculator: MoveCalculator, MoveCalculatorProvider {
     
     private func rookCanCastle(at square: BoardSquare?) -> Bool {
         guard let rook = chessBoard.piece(at: square), rook.type == .rook,
-              rook.color == color, rook.moveCalculator.moveCounter == 0 else {
+              rook.color == color, rook.moveCounter == 0 else {
             return false
         }
         let side: MoveDirection = self.square.column > rook.square.column ? .left : .right

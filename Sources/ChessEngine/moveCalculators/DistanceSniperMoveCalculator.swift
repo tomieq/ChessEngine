@@ -138,9 +138,9 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         }
         // moves when my king is checked
         if let king = chessBoard.king(color: color) {
-            if king.moveCalculator.possibleAttackers.count == 1 {
+            if king.possibleAttackers.count == 1 {
                 // if king is atacked once, you can beat attacker or cover attack path
-                if let attackerSquare = king.moveCalculator.possibleAttackers.first, let attacker = chessBoard[attackerSquare] {
+                if let attackerSquare = king.possibleAttackers.first, let attacker = chessBoard[attackerSquare] {
                     var forcedMoves = [attackerSquare]
                     if attacker.longDistanceAttackDirections.isEmpty.not {
                         forcedMoves.append(contentsOf: king.square.path(to: attackerSquare))
@@ -148,7 +148,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                     possibleMoves = possibleMoves.commonElements(with: forcedMoves)
                     controlledSquares = controlledSquares.commonElements(with: forcedMoves)
                 }
-            } else if king.moveCalculator.possibleAttackers.count > 1 {
+            } else if king.possibleAttackers.count > 1 {
                 // if king is atacked twice, you cannot cover, so it is king who must escape
                 possibleMoves = []
                 controlledSquares = []

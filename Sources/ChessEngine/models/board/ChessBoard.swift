@@ -126,7 +126,7 @@ public class ChessBoard {
                 return .checkmate(winner: color.other)
             }
             if isInCheck(color) {
-                logger.i("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.moveCalculator.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.moveCalculator.possibleMoves)" }.joined(separator: ", "))")
+                logger.i("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.possibleMoves)" }.joined(separator: ", "))")
                 return .check(attacker: color.other)
             }
         }

@@ -96,7 +96,7 @@ public class NotationParser {
         var pieces = moveExecutor.chessboard
             .getPieces(color: moveExecutor.chessboard.colorOnMove)
             .filter { $0.type == type }
-            .filter { $0.moveCalculator.possibleMoves.contains(to)}
+            .filter { $0.possibleMoves.contains(to)}
         if let column = column {
             pieces = pieces.filter { $0.square.column == column }
         }

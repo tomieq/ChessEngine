@@ -21,7 +21,7 @@ class NotationFactory {
                 let otherSameTypePiece = chessBoard
                     .getPieces(color: piece.color)
                     .filter { $0.type == piece.type && $0.type != .pawn && $0.square != piece.square}
-                    .filter { $0.moveCalculator.defends.contains(move.to) }
+                    .filter { $0.defends.contains(move.to) }
                     .first
                 if let otherSameTypePiece = otherSameTypePiece {
                     if otherSameTypePiece.square.column == move.from.column {
@@ -45,7 +45,7 @@ class NotationFactory {
                     let otherSameTypePiece = chessBoard
                         .getPieces(color: piece.color)
                         .filter { $0.type == piece.type && $0.type != .pawn && $0.square != piece.square}
-                        .filter { $0.moveCalculator.defends.contains(move.to) }
+                        .filter { $0.defends.contains(move.to) }
                         .first
                     if let otherSameTypePiece = otherSameTypePiece {
                         if otherSameTypePiece.square.column == move.from.column {

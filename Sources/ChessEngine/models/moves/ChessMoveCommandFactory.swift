@@ -37,8 +37,8 @@ public class ChessMoveCommandFactory {
             logger.e("Cannot move with \(piece) as now only \(chessboard.colorOnMove) can move now")
             throw ChessMoveCommandFactoryError.colorOnMove(chessboard.colorOnMove)
         }
-        guard piece.moveCalculator.possibleMoves.contains(to) else {
-            logger.e("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
+        guard piece.possibleMoves.contains(to) else {
+            logger.e("\(piece) cannot move to \(to). It can move only to \(piece.possibleMoves)")
             throw ChessMoveCommandFactoryError.canNotMove(type: piece.type, to: to)
         }
 
@@ -64,7 +64,7 @@ public class ChessMoveCommandFactory {
     }
 
     private func castlingMove(piece: ChessPiece, move: ChessBoardMove) -> ChessMoveCommand? {
-        if piece.type == .king, piece.moveCalculator.moveCounter == 0 {
+        if piece.type == .king, piece.moveCounter == 0 {
             switch piece.color {
             case .white:
                 if move.to == "g1" {
