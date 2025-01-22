@@ -78,7 +78,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                             allowedSquares = []
                         }
                         if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            pinInfo = PinInfo(attacker: piece.basic, coveredVictim: oppositeDirectionPiece.basic)
+                            pinInfo = PinInfo(attacker: piece, coveredVictim: oppositeDirectionPiece)
                         }
                     }
                 }
@@ -136,7 +136,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         if let king = chessBoard.king(color: color) {
             if king.moveCalculator.possibleAttackers.count == 1 {
                 // if king is atacked once, you can beat attacker or cover attack path
-                if let attackerSquare = king.moveCalculator.possibleAttackers.first, let attacker = chessBoard.piece(at: attackerSquare) {
+                if let attackerSquare = king.moveCalculator.possibleAttackers.first, let attacker = chessBoard[attackerSquare] {
                     var forcedMoves = [attackerSquare]
                     if attacker.longDistanceAttackDirections.isEmpty.not {
                         forcedMoves.append(contentsOf: king.square.path(to: attackerSquare))

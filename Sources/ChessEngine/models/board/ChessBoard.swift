@@ -23,8 +23,8 @@ public class ChessBoard {
         pgn.joined(separator: " ")
     }
 
-    public var allPieces: [ChessPieceInfo] {
-        self.pieces.map { $0.info }
+    public var allPieces: [ChessPiece] {
+        self.pieces
     }
 
     public init() {
@@ -87,10 +87,10 @@ public class ChessBoard {
         self.pieces.first{ $0.square == square }
     }
     
-    public subscript(square: BoardSquare?) -> ChessPieceInfo? {
+    public subscript(square: BoardSquare?) -> ChessPiece? {
         set {}
         get {
-            self.pieces.first{ $0.square == square }?.info
+            piece(at: square)
         }
     }
 
@@ -111,9 +111,6 @@ public class ChessBoard {
     }
     
     func isCheckMated(_ color: ChessPieceColor) -> Bool {
-        guard colorOnMove == color else {
-            return false
-        }
         for piece in getPieces(color: color) {
             if piece.possibleMoves.count > 0 {
                 return false
@@ -125,11 +122,11 @@ public class ChessBoard {
     public var status: ChessGameStatus {
         for color in ChessPieceColor.allCases {
             if isCheckMated(color) {
-                logger.i("It is checkmate for \(color)")
+                logger.i("It is checkmate for \(color) is check mated")
                 return .checkmate(winner: color.other)
             }
             if isInCheck(color) {
-                logger.i("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.possibleMoves)" }.joined(separator: ", "))")
+                logger.i("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.moveCalculator.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.moveCalculator.possibleMoves)" }.joined(separator: ", "))")
                 return .check(attacker: color.other)
             }
         }
@@ -164,7 +161,7 @@ public class ChessBoard {
         broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: occupiedSquares), mode: .normal))
     }
 
-    func getPieces(color: ChessPieceColor) -> [ChessPiece] {
+    public func getPieces(color: ChessPieceColor) -> [ChessPiece] {
         self.pieces.filter{ $0.color == color }
     }
 

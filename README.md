@@ -26,8 +26,8 @@ loader.load(.white, "d2 e2 f2")
       .load(.black, "Bh4")
 ```
 
-### ChessPieceInfo
-`ChessPieceInfo` represents a piece on the board.
+### ChessPiece
+`ChessPiece` represents a piece on the board.
 ```swift
 let piece = chessBoard["a1"]
 piece.color // color of the piece: .white/.black

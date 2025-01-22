@@ -8,10 +8,10 @@
 import Foundation
 
 
-struct ChessPiece {
-    let type: ChessPieceType
-    let color: ChessPieceColor
-    let square: BoardSquare
+public struct ChessPiece {
+    public let type: ChessPieceType
+    public let color: ChessPieceColor
+    public let square: BoardSquare
     let longDistanceAttackDirections: [MoveDirection]
     let moveCalculator: MoveCalculator
 
@@ -34,41 +34,41 @@ struct ChessPiece {
 }
 
 extension ChessPiece: MoveCalculator {
-    var moveCounter: Int {
+    public var moveCounter: Int {
         moveCalculator.moveCounter
     }
     
-    var possibleMoves: [BoardSquare] {
+    public var possibleMoves: [BoardSquare] {
         moveCalculator.possibleMoves
     }
     
-    var possibleVictims: [BoardSquare] {
+    public var possibleVictims: [BoardSquare] {
         moveCalculator.possibleVictims
     }
     
-    var possibleAttackers: [BoardSquare] {
+    public var possibleAttackers: [BoardSquare] {
         moveCalculator.possibleAttackers
     }
     
-    var defends: [BoardSquare] {
+    public var defends: [BoardSquare] {
         moveCalculator.defends
     }
     
-    var defenders: [BoardSquare] {
+    public var defenders: [BoardSquare] {
         moveCalculator.defenders
     }
     
-    var controlledSquares: [BoardSquare] {
+    public var controlledSquares: [BoardSquare] {
         moveCalculator.controlledSquares
     }
     
-    var pinInfo: PinInfo? {
+    public var pinInfo: PinInfo? {
         moveCalculator.pinInfo
     }
 }
 
 extension ChessPiece {
-    var fenLetter: String {
+    public var fenLetter: String {
         var letter = self.type == .pawn ? "P" : self.type.enLetter
         if self.color == .black {
             letter = letter.lowercased()
@@ -94,5 +94,24 @@ extension ChessPiece: Hashable {
 extension ChessPiece: CustomStringConvertible {
     public var description: String {
         "\(self.color.enName) \(self.type.enName) on \(self.square)"
+    }
+}
+
+extension ChessPiece {
+    var gamePiece: GamePiece {
+        switch self.type {
+        case .king:
+            King(self.type, self.color, self.square)
+        case .queen:
+            Queen(self.type, self.color, self.square)
+        case .rook:
+            Rook(self.type, self.color, self.square)
+        case .bishop:
+            Bishop(self.type, self.color, self.square)
+        case .knight:
+            Knight(self.type, self.color, self.square)
+        case .pawn:
+            Pawn(self.type, self.color, self.square)
+        }
     }
 }

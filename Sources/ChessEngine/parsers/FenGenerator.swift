@@ -58,7 +58,7 @@ public class FenGenerator {
             var emptyCounter = 0
             var rowFen = ""
             for column in BoardColumn.allCases {
-                if let piece = chessboard.piece(at: BoardSquare(column, row)) {
+                if let piece = chessboard[BoardSquare(column, row)] {
                     if emptyCounter > 0 {
                         rowFen.append("\(emptyCounter)")
                         emptyCounter = 0
