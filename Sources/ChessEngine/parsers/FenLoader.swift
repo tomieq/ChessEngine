@@ -4,12 +4,14 @@
 //
 //  Created by Tomasz on 10/01/2025.
 //
+import Logger
 
 public enum FenLoaderError: Error {
     case corruptedFen
 }
 
 public class FenLoader {
+    private let logger = Logger(FenLoader.self)
     private let boardLoader: ChessBoardLoader
     
     public init(boardLoader: ChessBoardLoader) {
@@ -19,12 +21,14 @@ public class FenLoader {
     public func load(fen: String) throws {
         let fenParts = fen.trimmed.split(" ")
         guard fenParts.count == 6 else {
+            logger.e("Corrupted fen: \(fen)")
             throw FenLoaderError.corruptedFen
         }
         boardLoader.chessBoard.removeAllPieces()
         let position = fenParts[0]
         let rows = position.split("/").reversed()
         guard rows.count == 8 else {
+            logger.e("Corrupted fen: \(fen)")
             throw FenLoaderError.corruptedFen
         }
         
@@ -55,8 +59,10 @@ public class FenLoader {
         case "b":
             boardLoader.chessBoard.colorOnMove = .black
         default:
+            logger.e("Corrupted fen: \(fen)")
             throw FenLoaderError.corruptedFen
         }
+        logger.i("Loaded fen: \(fen)")
     }
     
     func parse(fenLetter: Character) -> (color: ChessPieceColor, type: ChessPieceType)? {
