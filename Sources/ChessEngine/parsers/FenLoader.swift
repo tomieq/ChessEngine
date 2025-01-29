@@ -20,7 +20,7 @@ public class FenLoader {
     
     public func load(fen: String) throws {
         let fenParts = fen.trimmed.split(" ")
-        guard fenParts.count == 6 else {
+        guard fenParts.count > 1 else {
             logger.e("Corrupted fen: \(fen)")
             throw FenLoaderError.corruptedFen
         }
