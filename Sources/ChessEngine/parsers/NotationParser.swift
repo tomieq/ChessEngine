@@ -73,6 +73,7 @@ public class NotationParser {
             .replacingOccurrences(of: "+", with: "")
             .replacingOccurrences(of: "#", with: "")
         var column: BoardColumn?
+        var row: Int?
         if part.count == 2 {
             // it's a pawn move
             type = .pawn
@@ -82,6 +83,7 @@ public class NotationParser {
             to = BoardSquare(stringLiteral: part.subString(2, 4))
             type = ChessPieceType.make(letter: part.subString(0, 1), language: language) ?? .pawn
             column = BoardColumn(part.subString(1, 2))
+            row = Int(part.subString(1, 2))
         } else {
             // it's a piece move
             to = BoardSquare(stringLiteral: part.subString(1, 3))
@@ -99,6 +101,9 @@ public class NotationParser {
             .filter { $0.possibleMoves.contains(to)}
         if let column = column {
             pieces = pieces.filter { $0.square.column == column }
+        }
+        if let row = row {
+            pieces = pieces.filter { $0.square.row == row }
         }
         guard pieces.count == 1, let piece = pieces.first else {
             logger.i("white: \(moveExecutor.chessboard.dump(color: .white))")
