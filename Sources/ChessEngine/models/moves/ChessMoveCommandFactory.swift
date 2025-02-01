@@ -67,18 +67,22 @@ public class ChessMoveCommandFactory {
         if piece.type == .king, piece.moveCounter == 0 {
             switch piece.color {
             case .white:
-                if move.to == "g1" {
-                    return .castling(Castling.kingSide(.white))
-                }
-                if move.to == "c1" {
-                    return .castling(Castling.queenSide(.white))
+                if move.from == "e1" {
+                    if move.to == "g1" {
+                        return .castling(Castling.kingSide(.white))
+                    }
+                    if move.to == "c1" {
+                        return .castling(Castling.queenSide(.white))
+                    }
                 }
             case .black:
-                if move.to == "g8" {
-                    return .castling(Castling.kingSide(.black))
-                }
-                if move.to == "c8" {
-                    return .castling(Castling.queenSide(.black))
+                if move.from == "e8" {
+                    if move.to == "g8" {
+                        return .castling(Castling.kingSide(.black))
+                    }
+                    if move.to == "c8" {
+                        return .castling(Castling.queenSide(.black))
+                    }
                 }
             }
             
