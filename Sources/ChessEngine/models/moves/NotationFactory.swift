@@ -34,6 +34,7 @@ class NotationFactory {
             notation.append(move.to.description)
             if let promotedType = promotion {
                 notation.append("=\(promotedType.enLetter)")
+                notation.removeFirst()
             }
         case .take(let move, let promotion):
             if let piece = chessBoard[move.to] {
