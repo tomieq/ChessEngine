@@ -67,11 +67,18 @@ public class NotationParser {
 
     private func parseSingleMove(_ part: String, language: Language) throws -> ChessMoveCommand {
         var type: ChessPieceType?
+        var promotedType: ChessPieceType?
         var to: BoardSquare?
         let takes = part.contains("x")
-        let part = part.replacingOccurrences(of: "x", with: "")
+        var part = part.replacingOccurrences(of: "x", with: "")
             .replacingOccurrences(of: "+", with: "")
             .replacingOccurrences(of: "#", with: "")
+
+        if part.contains("="), let letter = part.split("=").last?.last {
+            promotedType = ChessPieceType.make(letter: "\(letter)", language: language)
+            part = part.replacingOccurrences(of: "=\(letter)", with: "")
+        }
+
         var column: BoardColumn?
         var row: Int?
         if part.count == 2 {
@@ -120,6 +127,6 @@ public class NotationParser {
                 return .enPassant(move, taken: takenSquare)
             }
         }
-        return takes ? .take(move, promotion: nil) : .move(move, promotion: nil)
+        return takes ? .take(move, promotion: promotedType) : .move(move, promotion: promotedType)
     }
 }
