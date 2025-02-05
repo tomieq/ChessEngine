@@ -136,3 +136,10 @@ extension ChessPieceType {
         }
     }
 }
+
+extension ChessPieceType {
+    public var isKing: Bool {
+        guard case .king = self else { return false }
+        return true
+    }
+}

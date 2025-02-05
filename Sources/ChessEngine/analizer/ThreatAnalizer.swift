@@ -20,7 +20,7 @@ public enum ChessThreat: Equatable, Comparable {
             pinned.type.weight
         }
     }
-
+    
     public static func < (lhs: ChessThreat, rhs: ChessThreat) -> Bool {
         lhs.value < rhs.value
     }
@@ -40,11 +40,21 @@ public class ThreatAnalizer {
         var threats: [ChessThreat] = []
         func getFork(attacker: ChessPiece) -> ChessThreat? {
             // the piece is safe where it is
-            guard attacker.possibleAttackers.isEmpty else {
-                // might consider that number of defenters is bigger than number of attackers
-                return nil
+            var isAttackerSafe: Bool {
+                let attackers = attacker.possibleAttackers.compactMap{ chessboard[$0] }
+                if attackers.isEmpty { return true }
+                // if piece has any defender and the attacker is king
+                if attacker.defenders.isEmpty.not, (attackers.filter{ $0.type.isKing.not }).isEmpty {
+                    return true
+                }
+                // if number of defenders is bigger than attackers
+                if attacker.defenders.count >= attackers.count {
+                    return true
+                }
+                return false
             }
-            guard chessboard.controlledSquares(by: attacker.color.other).contains(attacker.square).not else {
+            guard isAttackerSafe else {
+                // might consider that number of defenters is bigger than number of attackers
                 return nil
             }
             // check victims are stronger pieces or have no defenders
@@ -52,7 +62,7 @@ public class ThreatAnalizer {
                 .compactMap { chessboard[$0] }
                 .filter { victim in
                     victim.type.weight > attacker.type.weight || victim.defenders.isEmpty
-            }
+                }
             guard victims.count > 1 else {
                 return nil
             }
@@ -76,7 +86,7 @@ public class ThreatAnalizer {
 
 /*
  fork is an attack on two pieces:
-  1. kwhen pieces are worth more than an attacker
-  2. king + undefended piece
-  3. two undefended pieces
+ 1. kwhen pieces are worth more than an attacker
+ 2. king + undefended piece
+ 3. two undefended pieces
  */

@@ -32,7 +32,7 @@ class ThreatAnalizerTests: MoveTests {
         let board = ChessBoard()
         let analizer = ThreatAnalizer(chessboard: board)
         ChessBoardLoader(chessBoard: board)
-            .load(.white, "Kg2 Qe2 h3 g3 f2 e3 Be1 Rd1 b2 a3")
+            .load(.white, "Kg2 Qe2 h3 f2 Be1 Rd1 b2 a3")
             .load(.black, "h5 Kg8 g7 Qg6 f7 Nf4 Re8 d5 b6 a5")
         let threats = analizer.analize(attackerColor: .black)
         if case .fork(let attacker, let victims) = threats.first {
