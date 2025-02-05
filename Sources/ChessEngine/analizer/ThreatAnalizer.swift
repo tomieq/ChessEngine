@@ -40,6 +40,10 @@ public class ThreatAnalizer {
         var threats: [ChessThreat] = []
         func getFork(attacker: ChessPiece) -> ChessThreat? {
             // the piece is safe where it is
+            guard attacker.possibleAttackers.isEmpty else {
+                // might consider that number of defenters is bigger than number of attackers
+                return nil
+            }
             guard chessboard.controlledSquares(by: attacker.color.other).contains(attacker.square).not else {
                 return nil
             }
