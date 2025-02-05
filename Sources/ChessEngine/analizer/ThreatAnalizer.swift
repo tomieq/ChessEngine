@@ -5,7 +5,7 @@
 //  Created by Tomasz on 14/01/2025.
 //
 
-public enum ChessThreat: Equatable {
+public enum ChessThreat: Equatable, Comparable {
     case checkMate
     case fork(attacker: ChessPiece, victims: [ChessPiece])
     case pin(attacker: ChessPiece, pinned: ChessPiece, protected: ChessPiece)
@@ -19,6 +19,10 @@ public enum ChessThreat: Equatable {
         case .pin(_, let pinned, _):
             pinned.type.weight
         }
+    }
+
+    public static func < (lhs: ChessThreat, rhs: ChessThreat) -> Bool {
+        lhs.value < rhs.value
     }
 }
 
