@@ -9,7 +9,6 @@ public enum ChessThreat: Equatable {
     case checkMate
     case fork(attacker: ChessPiece, victims: [ChessPiece])
     case pin(attacker: ChessPiece, pinned: ChessPiece, protected: ChessPiece)
-    case freePiece(attacker: ChessPiece, victim: ChessPiece)
     
     var value: Int {
         switch self {
@@ -19,8 +18,6 @@ public enum ChessThreat: Equatable {
             victims.map { $0.type.weight }.min() ?? 0
         case .pin(_, let pinned, _):
             pinned.type.weight
-        case .freePiece(_, _):
-            1
         }
     }
 }
@@ -37,15 +34,25 @@ public class ThreatAnalizer {
             return [.checkMate]
         }
         var threats: [ChessThreat] = []
-        chessboard.getPieces(color: attackerColor).forEach { piece in
-            let piecesUnderAttack = piece
-                .possibleVictims
+        func getFork(attacker: ChessPiece) -> ChessThreat? {
+            // the piece is safe where it is
+            guard chessboard.controlledSquares(by: attacker.color.other).contains(attacker.square).not else {
+                return nil
+            }
+            // check victims are stronger pieces or have no defenders
+            let victims = attacker.possibleVictims
                 .compactMap { chessboard[$0] }
-                .filter { piece.type.weight < $0.type.weight || $0.defenders.isEmpty }
-            if piecesUnderAttack.count > 1 {
-                threats.append(.fork(attacker: piece, victims: piecesUnderAttack))
-            } else if let attackedPiece = piecesUnderAttack.first {
-                threats.append(.freePiece(attacker: piece, victim: attackedPiece))
+                .filter { victim in
+                    victim.type.weight > attacker.type.weight || victim.defenders.isEmpty
+            }
+            guard victims.count > 1 else {
+                return nil
+            }
+            return .fork(attacker: attacker, victims: victims)
+        }
+        chessboard.getPieces(color: attackerColor).forEach { piece in
+            if let fork = getFork(attacker: piece) {
+                threats.append(fork)
             }
         }
         chessboard.getPieces(color: attackerColor.other).forEach { piece in

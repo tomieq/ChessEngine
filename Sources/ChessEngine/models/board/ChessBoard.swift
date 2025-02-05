@@ -34,7 +34,13 @@ public class ChessBoard {
     private init(pieces: [ChessPiece]) {
         self.pieces = pieces
     }
-    
+
+    public func controlledSquares(by color: ChessPieceColor) -> [BoardSquare] {
+        getPieces(color: color).flatMap { piece in
+            piece.controlledSquares
+        }
+    }
+
     func subscribe(subscriber: @escaping (ChessBoardEvent) -> Void) {
         self.listeners.append(subscriber)
     }
