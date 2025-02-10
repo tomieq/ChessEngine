@@ -4,6 +4,7 @@
 //
 //  Created by Tomasz on 14/01/2025.
 //
+import SwiftExtensions
 
 public enum ChessThreat: Equatable, Comparable {
     case checkMate

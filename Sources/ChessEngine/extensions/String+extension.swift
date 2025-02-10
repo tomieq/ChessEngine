@@ -28,22 +28,6 @@ extension String {
 }
 
 extension String {
-    func split(_ splitter: String) -> [String] {
-        self.components(separatedBy: splitter)
-    }
-}
-
-extension String {
-    func trimming(_ characters: String) -> String {
-        return self.trimmingCharacters(in: CharacterSet(charactersIn: characters))
-    }
-
-    var trimmed: String {
-        self.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
-
-extension String {
     mutating func removeSubrange(_ range: ClosedRange<Int>) {
         let startIndex = index(self.startIndex, offsetBy: range.lowerBound)
         self.removeSubrange(startIndex..<index(startIndex, offsetBy: range.count))
