@@ -94,6 +94,9 @@ public class ChessMoveExecutor {
         chessboard.movesHistory.append(move)
         // send event to sync UI
         moveListener?(move)
+        chessboard.allPieces
+            .compactMap { $0.moveCalculator as? MoveHistoryDependentCalculator}
+            .forEach { $0.wipe() }
     }
     
     public func revert() {

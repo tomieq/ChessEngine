@@ -13,7 +13,7 @@ public struct ChessPiece {
     public let color: ChessPieceColor
     public let square: BoardSquare
     let longDistanceAttackDirections: [MoveDirection]
-    private let moveCalculator: MoveCalculator
+    let moveCalculator: MoveCalculator
 
     init(_ detached: DetachedChessPiece,
          _ moveCalculator: MoveCalculator) {

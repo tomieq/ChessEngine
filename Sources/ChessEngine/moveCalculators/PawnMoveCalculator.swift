@@ -206,3 +206,9 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         return pieces
     }
 }
+
+extension PawnMoveCalculator: MoveHistoryDependentCalculator {
+    func wipe() {
+        calculatedMoves = nil
+    }
+}
