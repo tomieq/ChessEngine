@@ -57,4 +57,23 @@ class Issues: XCTestCase {
         }
         XCTAssertEqual("6k1/2r5/2p5/8/P2PB3/3P4/3n4/6K1 w - - 0 5", fenGenerator.fen)
     }
+    
+    func test_enPassantInCheck() throws {
+        let chessboard = ChessBoard()
+        let boardLoader = ChessBoardLoader(chessBoard: chessboard)
+        let sut = FenLoader(boardLoader: boardLoader)
+        try sut.load(fen: "8/7N/2q1p3/3B1k1P/2Np1p2/8/2P1P1P1/5K2 b - -")
+        let fenGenerator = FenGenerator(chessboard: chessboard)
+        let moveExecutor = ChessMoveExecutor(chessboard: chessboard)
+        let parser = NotationParser(moveExecutor: moveExecutor)
+        let pngs = [
+            "Qxd5",
+            "g4+",
+            "fxg3"
+        ]
+        pngs.forEach {
+            try? parser.process($0)
+        }
+        XCTAssertEqual("8/7N/4p3/3q1k1P/2Np4/6p1/2P1P3/5K2 w - - 0 2", fenGenerator.fen)
+    }
 }

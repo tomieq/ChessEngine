@@ -167,6 +167,18 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                     if attacker.longDistanceAttackDirections.isEmpty.not {
                         forcedMoves.append(contentsOf: king.square.path(to: attackerSquare))
                     }
+                    // check possibility to neutralize check by en passant
+                    if attacker.type == .pawn {
+                        let attackerUtils = PawnUtils(square: attackerSquare, color: attacker.color)
+                        if attacker.square == attackerUtils.squareAfterDoubleMove,
+                           let attackerStartSquare = attackerUtils.startingSquare,
+                           let lastMove = chessBoard.movesHistory.last?.rawMove,
+                           lastMove == ChessBoardMove(from: attackerStartSquare, to: attackerSquare),
+                           let enPassantMove = attackerSquare.move(attackerUtils.crawlingDirection.opposite)
+                        {
+                            forcedMoves.append(enPassantMove)
+                        }
+                    }
                     possibleMoves = possibleMoves.commonElements(with: forcedMoves)
                     controlledSquares = controlledSquares.commonElements(with: forcedMoves)
                 }

@@ -28,12 +28,7 @@ struct PawnUtils {
     }
 
     var isAtStartingSquare: Bool {
-        switch color {
-        case .white:
-            return square.row == 2
-        case .black:
-            return square.row == 7
-        }
+        square == startingSquare
     }
     
     var enPassantDirections: [MoveDirection] {
@@ -51,5 +46,23 @@ struct PawnUtils {
     
     var enPassantSquares: [BoardSquare] {
         enPassantDirections.compactMap { square.move($0) }
+    }
+    
+    var squareAfterDoubleMove: BoardSquare? {
+        switch color {
+        case .white:
+            BoardSquare(square.column, 4)
+        case .black:
+            BoardSquare(square.column, 5)
+        }
+    }
+
+    var startingSquare: BoardSquare? {
+        switch color {
+        case .white:
+            BoardSquare(square.column, 2)
+        case .black:
+            BoardSquare(square.column, 7)
+        }
     }
 }
