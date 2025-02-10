@@ -47,7 +47,7 @@ public class ChessMoveExecutor {
                                changes: changes,
                                status: chessboard.status))
         case .take(let move, let promotion):
-            logger.i("\(chessboard[move.from]!.color) \(chessboard[move.from]!.type) from \(move.from) takes \(chessboard[move.from]!.type) on \(move.to)")
+            logger.i("\(chessboard[move.from]!.color) \(chessboard[move.from]!.type) from \(move.from) takes \(chessboard[move.to]!.type) on \(move.to)")
             var changes: [ChessMove.Change] = []
             if let removedPiece = chessboard[move.to] {
                 changes.append(.remove(removedPiece.type, removedPiece.color, from: move.to))
@@ -58,7 +58,8 @@ public class ChessMoveExecutor {
                 changes.append(.add(promotedType, color, to: move.to))
                 // update the local board
                 chessboard.remove(move.to, move.from)
-                chessboard.add(Queen(chessboard.colorOnMove, move.to))
+                chessboard.add(promotedType.gamePiece(color: chessboard.colorOnMove, square: move.to))
+                logger.i("Pawn at \(move.to) becomes \(promotedType)")
             } else {
                 // build changes
                 changes.append(.move(move))
