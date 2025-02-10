@@ -10,7 +10,7 @@ import Foundation
 import XCTest
 
 class Issues: XCTestCase {
-    func test_fenEnpassant() throws {
+    func test_enpassant() throws {
         let chessboard = ChessBoard()
         let boardLoader = ChessBoardLoader(chessBoard: chessboard)
         let sut = FenLoader(boardLoader: boardLoader)
@@ -75,5 +75,24 @@ class Issues: XCTestCase {
             try? parser.process($0)
         }
         XCTAssertEqual("8/7N/4p3/3q1k1P/2Np4/6p1/2P1P3/5K2 w - - 0 2", fenGenerator.fen)
+    }
+    
+    func test_loadFenEnPassantPossibility() throws {
+        let chessboard = ChessBoard()
+        let boardLoader = ChessBoardLoader(chessBoard: chessboard)
+        let sut = FenLoader(boardLoader: boardLoader)
+        try sut.load(fen: "r4r1k/1bp4p/p3p3/1p2Pp2/3p4/P3q1P1/1PP1BR1P/3QR1K1 w - f6 0 27")
+        XCTAssertEqual(chessboard.possibleEnPassant, "f6")
+        let fenGenerator = FenGenerator(chessboard: chessboard)
+        let moveExecutor = ChessMoveExecutor(chessboard: chessboard)
+        let parser = NotationParser(moveExecutor: moveExecutor)
+        let pngs = [
+            "exf6"
+        ]
+        pngs.forEach {
+            try? parser.process($0)
+        }
+        XCTAssertEqual(chessboard.possibleEnPassant, nil)
+        XCTAssertEqual("r4r1k/1bp4p/p3pP2/1p6/3p4/P3q1P1/1PP1BR1P/3QR1K1 b - - 0 1", fenGenerator.fen)
     }
 }

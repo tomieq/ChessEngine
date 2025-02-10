@@ -12,6 +12,7 @@ typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
 public class ChessBoard {
     private let logger = Logger(ChessBoard.self)
+    var possibleEnPassant: BoardSquare?
     public var colorOnMove: ChessPieceColor = .white
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
@@ -78,6 +79,7 @@ public class ChessBoard {
         pieces.removeAll { [move.to, move.from].contains($0.square) }
         pieces.append(movedPiece)
         broadcast(event: ChessBoardEvent(change: .pieceMoved(move), mode: mode))
+        possibleEnPassant = nil
     }
     
     private func addPiece(_ piece: GamePiece?, emitChanges: Bool = true, _ mode: ChessMoveMode = .normal) {

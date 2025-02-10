@@ -5,6 +5,7 @@
 //  Created by Tomasz on 10/01/2025.
 //
 import Logger
+import SwiftExtensions
 
 public enum FenLoaderError: Error {
     case corruptedFen
@@ -61,6 +62,9 @@ public class FenLoader {
         default:
             logger.e("Corrupted fen: \(fen)")
             throw FenLoaderError.corruptedFen
+        }
+        if let possibleEnPassant = fenParts[safeIndex: 3], let square = BoardSquare(possibleEnPassant) {
+            boardLoader.chessBoard.possibleEnPassant = square
         }
         logger.i("Loaded fen: \(fen)")
     }

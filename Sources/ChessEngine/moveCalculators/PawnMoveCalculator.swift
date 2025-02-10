@@ -151,11 +151,15 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         for direction in pawn.enPassantDirections where allowedDirections.contains(direction) {
             if let possibleSquare = square.move(direction),
                let enemyPawsSqare = possibleSquare.move(crawlingDirection.opposite),
-               let enemyPawn = chessBoard[enemyPawsSqare], enemyPawn.color == color.other, enemyPawn.type == .pawn,
-               let lastMove = chessBoard.movesHistory.last?.rawMove,
-               let enemyStartingSqaure = enemyPawsSqare.move(crawlingDirection)?.move(crawlingDirection),
-               lastMove == ChessBoardMove(from: enemyStartingSqaure, to: enemyPawsSqare) {
-                possibleMoves.append(possibleSquare)
+               let enemyPawn = chessBoard[enemyPawsSqare], enemyPawn.color == color.other, enemyPawn.type == .pawn {
+                let enemyPawnUtils = PawnUtils(square: enemyPawn.square, color: enemyPawn.color)
+                if let lastMove = chessBoard.movesHistory.last?.rawMove,
+                   let enemyStartingSqaure = enemyPawnUtils.startingSquare,
+                   lastMove == ChessBoardMove(from: enemyStartingSqaure, to: enemyPawsSqare) {
+                    possibleMoves.append(possibleSquare)
+                } else if chessBoard.possibleEnPassant == possibleSquare {
+                    possibleMoves.append(possibleSquare)
+                }
             }
         }
         // moves when my king is checked
