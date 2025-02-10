@@ -95,4 +95,22 @@ class Issues: XCTestCase {
         XCTAssertEqual(chessboard.possibleEnPassant, nil)
         XCTAssertEqual("r4r1k/1bp4p/p3pP2/1p6/3p4/P3q1P1/1PP1BR1P/3QR1K1 b - - 0 1", fenGenerator.fen)
     }
+    
+    func test_QueenPinCalculations() throws {
+        let chessboard = ChessBoard()
+        let boardLoader = ChessBoardLoader(chessBoard: chessboard)
+        let sut = FenLoader(boardLoader: boardLoader)
+        try sut.load(fen: "1r4k1/1p3qpp/p3b3/8/1QB3n1/5N2/P1P2PPP/1R2K2R w K - 3 22")
+        let fenGenerator = FenGenerator(chessboard: chessboard)
+        let moveExecutor = ChessMoveExecutor(chessboard: chessboard)
+        let parser = NotationParser(moveExecutor: moveExecutor)
+        let pngs = [
+            "Ng5",
+            "Qxf2+"
+        ]
+        pngs.forEach {
+            try? parser.process($0)
+        }
+        XCTAssertEqual("1r4k1/1p4pp/p3b3/6N1/1QB3n1/8/P1P2qPP/1R2K2R w K - 0 2", fenGenerator.fen)
+    }
 }
