@@ -55,7 +55,7 @@ class NotationParserTests: XCTestCase {
         XCTAssertEqual(executor.chessboard.status, .checkmate(winner: .white))
     }
     
-    func test_enPassant() throws {
+    func test_enPassantWhite() throws {
         let executor = moveExecutor
         let sut = NotationParser(moveExecutor: executor)
         try sut.process("""
@@ -66,6 +66,19 @@ class NotationParserTests: XCTestCase {
         let lastMove = executor.chessboard.movesHistory.last
         XCTAssertEqual(lastMove?.notation, "exd6")
         XCTAssertEqual(lastMove?.changes.contains(.remove(.pawn, .black, from: "d5")), true)
+    }
+    
+    func test_enPassantBlack() throws {
+        let executor = moveExecutor
+        let sut = NotationParser(moveExecutor: executor)
+        try sut.process("""
+        h4 d5
+        g4 d4
+        c4 dxc3
+        """)
+        let lastMove = executor.chessboard.movesHistory.last
+        XCTAssertEqual(lastMove?.notation, "dxc3")
+        XCTAssertEqual(lastMove?.changes.contains(.remove(.pawn, .white, from: "c4")), true)
     }
     
     func test_parsingAmbigiousPawnTake() throws {

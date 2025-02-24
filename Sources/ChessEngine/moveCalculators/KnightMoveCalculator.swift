@@ -62,13 +62,15 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         var allowedSquares = square.knightMoves
         // check if move is pinned and update defenders and attackers
         for direction in MoveDirection.allCases {
+            var hasDefenderFromThisDirection = false
             for piece in pieces(in: direction) {
                 guard piece.longDistanceAttackDirections.contains(direction) else {
                     break
                 }
                 if piece.color == self.color {
                     defenders.append(piece.square)
-                } else {
+                    hasDefenderFromThisDirection = true
+                } else if hasDefenderFromThisDirection.not {
                     possibleAttackers.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                        oppositeDirectionPiece.color == self.color,

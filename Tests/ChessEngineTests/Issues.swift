@@ -28,8 +28,8 @@ class Issues: XCTestCase {
             "g4",
             "hxg3"
         ]
-        pngs.forEach {
-            try? parser.process($0)
+        try pngs.forEach {
+            try parser.process($0)
         }
         XCTAssertEqual("8/8/8/1p6/p1p1k3/P1P2ppP/1P1K4/8 w - - 0 5", fenGenerator.fen)
     }
@@ -52,8 +52,8 @@ class Issues: XCTestCase {
             "Kg1",
             "Nxd2"
         ]
-        pngs.forEach {
-            try? parser.process($0)
+        try pngs.forEach {
+            try parser.process($0)
         }
         XCTAssertEqual("6k1/2r5/2p5/8/P2PB3/3P4/3n4/6K1 w - - 0 5", fenGenerator.fen)
     }
@@ -71,8 +71,8 @@ class Issues: XCTestCase {
             "g4+",
             "fxg3"
         ]
-        pngs.forEach {
-            try? parser.process($0)
+        try pngs.forEach {
+            try parser.process($0)
         }
         XCTAssertEqual("8/7N/4p3/3q1k1P/2Np4/6p1/2P1P3/5K2 w - - 0 2", fenGenerator.fen)
     }
@@ -89,8 +89,8 @@ class Issues: XCTestCase {
         let pngs = [
             "exf6"
         ]
-        pngs.forEach {
-            try? parser.process($0)
+        try pngs.forEach {
+            try parser.process($0)
         }
         XCTAssertEqual(chessboard.possibleEnPassant, nil)
         XCTAssertEqual("r4r1k/1bp4p/p3pP2/1p6/3p4/P3q1P1/1PP1BR1P/3QR1K1 b - - 0 1", fenGenerator.fen)
@@ -108,8 +108,8 @@ class Issues: XCTestCase {
             "Ng5",
             "Qxf2+"
         ]
-        pngs.forEach {
-            try? parser.process($0)
+        try pngs.forEach {
+            try parser.process($0)
         }
         XCTAssertEqual("1r4k1/1p4pp/p3b3/6N1/1QB3n1/8/P1P2qPP/1R2K2R w K - 0 2", fenGenerator.fen)
     }
@@ -125,9 +125,26 @@ class Issues: XCTestCase {
         let pngs = [
             "f6"
         ]
-        pngs.forEach {
-            try? parser.process($0)
+        try pngs.forEach {
+            try parser.process($0)
         }
         XCTAssertEqual("2r2rk1/p3p2p/5ppB/qpbbQ3/P7/1B3P2/2P3PP/5R1K w - - 0 1", fenGenerator.fen)
+    }
+    
+    func test_KnightPinCalculations() throws {
+        let chessboard = ChessBoard()
+        let boardLoader = ChessBoardLoader(chessBoard: chessboard)
+        let sut = FenLoader(boardLoader: boardLoader)
+        try sut.load(fen: "rnb1kr2/5Npp/p1pP4/1p6/4n3/2P1q3/PN2B1PP/R2QR2K w q - 4 20")
+        let fenGenerator = FenGenerator(chessboard: chessboard)
+        let moveExecutor = ChessMoveExecutor(chessboard: chessboard)
+        let parser = NotationParser(moveExecutor: moveExecutor)
+        let pngs = [
+            "Bh5",
+            "Nf2+"
+        ]
+        try pngs.forEach {
+            try parser.process($0)
+        }
     }
 }
