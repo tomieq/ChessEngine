@@ -63,7 +63,8 @@ public class FenLoader {
             logger.e("Corrupted fen: \(fen)")
             throw FenLoaderError.corruptedFen
         }
-        if let possibleEnPassant = fenParts[safeIndex: 3], let square = BoardSquare(possibleEnPassant) {
+        if let possibleEnPassant = fenParts[safeIndex: 3], possibleEnPassant != "-",
+            let square = BoardSquare(possibleEnPassant) {
             boardLoader.chessBoard.possibleEnPassant = square
         }
         logger.i("Loaded fen: \(fen)")

@@ -176,13 +176,16 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                     // check possibility to neutralize check by en passant
                     if attacker.type == .pawn {
                         let attackerUtils = PawnUtils(square: attackerSquare, color: attacker.color)
+
                         if attacker.square == attackerUtils.squareAfterDoubleMove,
-                           let attackerStartSquare = attackerUtils.startingSquare,
-                           let lastMove = chessBoard.movesHistory.last?.rawMove,
-                           lastMove == ChessBoardMove(from: attackerStartSquare, to: attackerSquare),
-                           let enPassantMove = attackerSquare.move(attackerUtils.crawlingDirection.opposite)
-                        {
-                            forcedMoves.append(enPassantMove)
+                           let enPassantMove = attackerSquare.move(attackerUtils.crawlingDirection.opposite) {
+                            if let attackerStartSquare = attackerUtils.startingSquare,
+                               let lastMove = chessBoard.movesHistory.last?.rawMove,
+                               lastMove == ChessBoardMove(from: attackerStartSquare, to: attackerSquare) {
+                                forcedMoves.append(enPassantMove)
+                            } else if chessBoard.possibleEnPassant == enPassantMove {
+                                forcedMoves.append(enPassantMove)
+                            }
                         }
                     }
                     possibleMoves = possibleMoves.commonElements(with: forcedMoves)

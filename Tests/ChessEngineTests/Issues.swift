@@ -147,4 +147,20 @@ class Issues: XCTestCase {
             try parser.process($0)
         }
     }
+    
+    func test_loadFenEnPassantInCheck() throws {
+        let chessboard = ChessBoard()
+        let boardLoader = ChessBoardLoader(chessBoard: chessboard)
+        let sut = FenLoader(boardLoader: boardLoader)
+        try sut.load(fen: "2r3k1/p6p/4p3/6pP/3P2PK/4pq2/PP2R3/4Q3 w - g6")
+        XCTAssertEqual(chessboard.possibleEnPassant, "g6")
+        let moveExecutor = ChessMoveExecutor(chessboard: chessboard)
+        let parser = NotationParser(moveExecutor: moveExecutor)
+        let pngs = [
+            "hxg6"
+        ]
+        try pngs.forEach {
+            try parser.process($0)
+        }
+    }
 }
