@@ -1,0 +1,24 @@
+{
+  "originHash" : "9c6b1366f58b6f3792eb260b99c80d60d5bd846c822ce65469d4e64a0423602f",
+  "pins" : [
+    {
+      "identity" : "logger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tomieq/Logger",
+      "state" : {
+        "revision" : "2b2ba45ef13ed840ca331dcab94d45386f5b8aa5",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swiftextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tomieq/SwiftExtensions",
+      "state" : {
+        "branch" : "master",
+        "revision" : "63b602b14da21959b0ed77d7707b856e42429172"
+      }
+    }
+  ],
+  "version" : 3
+}

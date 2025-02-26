@@ -130,11 +130,11 @@ public class ChessBoard {
     public var status: ChessGameStatus {
         for color in ChessPieceColor.allCases {
             if isCheckMated(color) {
-                logger.i("It is checkmate for \(color) is check mated")
+                logger.i("\(color) king is check mated")
                 return .checkmate(winner: color.other)
             }
             if isInCheck(color) {
-                logger.i("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.possibleMoves)" }.joined(separator: ", "))")
+                logger.i("\(color) king is in check. Possible moves for \(color): \(getPieces(color: color).filter{ $0.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.possibleMoves)" }.joined(separator: ", "))")
                 return .check(attacker: color.other)
             }
         }
