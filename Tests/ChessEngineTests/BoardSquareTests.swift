@@ -139,5 +139,16 @@ final class BoardSquareTests: XCTestCase {
         XCTAssertTrue(start.path(to: "e2").contains("d3"))
         XCTAssertEqual(start.path(to: "f1").count, 3)
     }
+    
+    func test_coordinates() {
+        XCTAssertEqual(BoardSquare("a1").coordinates.columnIndex, 0)
+        XCTAssertEqual(BoardSquare("a1").coordinates.row, 1)
+        
+        XCTAssertEqual(BoardSquare("a8").coordinates.columnIndex, 0)
+        XCTAssertEqual(BoardSquare("a8").coordinates.row, 8)
+        
+        XCTAssertEqual(BoardSquare("h8").coordinates.columnIndex, 7)
+        XCTAssertEqual(BoardSquare("h8").coordinates.row, 8)
+    }
 
 }

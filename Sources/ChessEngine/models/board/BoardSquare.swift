@@ -11,6 +11,10 @@ import Logger
 public struct BoardSquare {
     let column: BoardColumn
     let row: Int
+    
+    public var coordinates: (columnIndex: Int, row: Int) {
+        (column.rawValue, row)
+    }
 
     init?(_ column: BoardColumn?, _ row: Int) {
         guard row <= 8, row >= 1, let column = column else {
