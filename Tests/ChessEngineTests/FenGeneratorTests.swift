@@ -38,15 +38,12 @@ class FenGeneratorTests: XCTestCase {
         XCTAssertEqual(sut.fen, "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2")
     }
     
-//    func test_e4c5Nf3Move() throws {
-//        let chessboard = ChessBoard()
-//        chessboard.setupGame()
-//        let commandFactory = ChessMoveCommandFactory(chessboard: chessboard)
-//        let moveExecutor = ChessMoveExecutor(chessboard: chessboard)
-//        moveExecutor.process(try commandFactory.make(from: "e2", to: "e4"))
-//        moveExecutor.process(try commandFactory.make(from: "c7", to: "c5"))
-//        moveExecutor.process(try commandFactory.make(from: "g1", to: "f3"))
-//        let sut = FenGenerator(chessboard: chessboard)
-//        XCTAssertEqual(sut.fen, "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2")
-//    }
+    func test_importedEnPasant() throws {
+        let chessboard = ChessBoard()
+        let boardLoader = ChessBoardLoader(chessBoard: chessboard)
+        let fenLoader = FenLoader(boardLoader: boardLoader)
+        try fenLoader.load(fen: "2r5/p5bk/q2Bp1pp/1p1nPp2/4Q2P/P4N2/1PR2PP1/6K1 w - f6")
+        let sut = FenGenerator(chessboard: chessboard)
+        XCTAssertTrue(sut.fen.contains("2r5/p5bk/q2Bp1pp/1p1nPp2/4Q2P/P4N2/1PR2PP1/6K1 w - f6"))
+    }
 }

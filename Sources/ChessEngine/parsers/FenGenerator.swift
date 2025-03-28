@@ -38,7 +38,9 @@ public class FenGenerator {
         if let lastMove = chessboard.movesHistory.last?.rawMove, let pawn = chessboard[lastMove.to],
            pawn.type == .pawn, abs(lastMove.from.row - lastMove.to.row) > 1,
            let square = lastMove.from.move(PawnUtils(square: lastMove.from, color: pawn.color).crawlingDirection) {
-            enPassantSquare = "\(square)"
+            enPassantSquare = square.description
+        } else if let importedEnPassant = chessboard.possibleEnPassant {
+            enPassantSquare = importedEnPassant.description
         }
         result.append(" \(enPassantSquare)")
         // number of half moves according to draw ruless TODO
