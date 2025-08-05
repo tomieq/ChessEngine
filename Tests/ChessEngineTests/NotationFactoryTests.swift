@@ -32,4 +32,18 @@ class NotationFactoryTests: XCTestCase {
             XCTAssertEqual(notation, parts[index])
         }
     }
+    
+    func test_RookMove() throws {
+        let commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let boardLoader = ChessBoardLoader(chessBoard: chessBoard)
+        let fenLoader = FenLoader(boardLoader: boardLoader)
+        try fenLoader.load(fen: "3k2r1/2prbQ2/pp6/2q1R1p1/5p2/1P4P1/P6P/4R2K b - - 9 38")
+        let moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
+        moveExecutor.process(try commandFactory.make(from: "g8", to: "f8"))
+        moveExecutor.process(try commandFactory.make(from: "f7", to: "f8"))
+        XCTAssertEqual(chessBoard.pgn.last, "Qxf8+")
+        moveExecutor.process(try commandFactory.make(from: "e7", to: "f8"))
+        moveExecutor.process(try commandFactory.make(from: "e5", to: "e8"))
+        XCTAssertEqual(chessBoard.pgn.last, "Re8#")
+    }
 }
