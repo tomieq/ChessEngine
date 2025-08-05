@@ -46,4 +46,14 @@ class NotationFactoryTests: XCTestCase {
         moveExecutor.process(try commandFactory.make(from: "e5", to: "e8"))
         XCTAssertEqual(chessBoard.pgn.last, "Re8#")
     }
+    
+    func test_quennPromotion() throws {
+        let commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let boardLoader = ChessBoardLoader(chessBoard: chessBoard)
+        let fenLoader = FenLoader(boardLoader: boardLoader)
+        try fenLoader.load(fen: "6k1/4B3/8/K5P1/8/8/p7/1R6 b - - 0 3")
+        let moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
+        moveExecutor.process(try commandFactory.make(from: "a2", to: "b1"))
+        XCTAssertEqual(chessBoard.pgn.last, "axb1=Q")
+    }
 }

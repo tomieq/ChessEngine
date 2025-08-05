@@ -17,7 +17,9 @@ class NotationFactory {
         var notation = ""
         switch command {
         case .move(let move, let promotion):
-            if let piece = chessBoard[move.to] {
+            if promotion.notNil {
+                notation.append(move.from.column.letter.description)
+            } else if let piece = chessBoard[move.to] {
                 notation.append(piece.type.enLetter)
                 let otherSameTypePiece = chessBoard
                     .getPieces(color: piece.color)
@@ -39,7 +41,9 @@ class NotationFactory {
                 notation.removeFirst()
             }
         case .take(let move, let promotion):
-            if let piece = chessBoard[move.to] {
+            if promotion.notNil {
+                notation.append(move.from.column.letter.description)
+            } else if let piece = chessBoard[move.to] {
                 switch piece.type {
                 case .pawn:
                     notation.append(move.from.column.letter.description)
