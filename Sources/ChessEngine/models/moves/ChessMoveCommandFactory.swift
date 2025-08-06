@@ -23,7 +23,18 @@ public class ChessMoveCommandFactory {
         self.chessboard = chessboard
     }
     
-    public func make(from: BoardSquare?, to: BoardSquare?) throws -> ChessMoveCommand {
+    public func isPromotionMove(from: BoardSquare?, to: BoardSquare?) -> Bool {
+        guard let from = from, let to = to, let piece = chessboard[from], piece.type == .pawn else {
+            return false
+        }
+        switch piece.color {
+        case .white: if to.row == 8 { return true }
+        case .black: if to.row == 1 { return true }
+        }
+        return false
+    }
+    
+    public func make(from: BoardSquare?, to: BoardSquare?, promotedType: ChessPieceType? = nil) throws -> ChessMoveCommand {
         guard let from = from, let to = to else {
             logger.e("Invalid square")
             throw ChessMoveCommandFactoryError.invalidSquare
@@ -44,10 +55,12 @@ public class ChessMoveCommandFactory {
 
         if let event = castlingMove(piece: piece, move: move) { return event }
         if let event = enPassantMove(piece: piece, move: move) { return event }
+        
+        let promotionType = isPromotionMove(from: from, to: to) ? (promotedType ?? .queen) : nil
         if let _ = chessboard[to] {
-            return .take(move, promotion: promotionType(piece: piece, move: move))
+            return .take(move, promotion: promotionType)
         } else {
-            return .move(move, promotion: promotionType(piece: piece, move: move))
+            return .move(move, promotion: promotionType)
         }
     }
     
@@ -86,22 +99,6 @@ public class ChessMoveCommandFactory {
                 }
             }
             
-        }
-        return nil
-    }
-    
-    private func promotionType(piece: ChessPiece, move: ChessBoardMove) -> ChessPieceType? {
-        if piece.type == .pawn {
-            switch piece.color {
-            case .white:
-                if move.to.row == 8 {
-                    return .queen
-                }
-            case .black:
-                if move.to.row == 1 {
-                    return .queen
-                }
-            }
         }
         return nil
     }
