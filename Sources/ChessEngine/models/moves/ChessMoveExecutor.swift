@@ -41,6 +41,15 @@ public class ChessMoveExecutor {
                 // update the local board
                 chessboard.move(move)
             }
+            
+            // set enPassant flag so notation factory can have real chessboard.status
+            if chessboard[move.to]?.type == .pawn {
+                let utils = PawnUtils(square: move.from, color: color)
+                if utils.isAtStartingSquare, utils.squareAfterDoubleMove == move.to {
+                    chessboard.possibleEnPassant = move.to.move(chessboard.colorOnMove.other.pawnCrawlDirection)
+                }
+            }
+            
             // store history
             register(ChessMove(color: color,
                                notation: self.notationFactory.make(from: command),
@@ -95,6 +104,10 @@ public class ChessMoveExecutor {
         chessboard.movesHistory.append(move)
         // send event to sync UI
         moveListener?(move)
+        invalidateCalculatedMoves()
+    }
+    
+    private func invalidateCalculatedMoves() {
         chessboard.allPieces
             .compactMap { $0.moveCalculator as? MoveHistoryDependentCalculator}
             .forEach { $0.wipe() }

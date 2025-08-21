@@ -44,6 +44,10 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         default:
             break
         }
+        self.invalidateMoves()
+    }
+    
+    func invalidateMoves() {
         self.calculatedMoves = nil
     }
     
@@ -230,6 +234,6 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
 
 extension PawnMoveCalculator: MoveHistoryDependentCalculator {
     func wipe() {
-        calculatedMoves = nil
+        invalidateMoves()
     }
 }

@@ -210,5 +210,21 @@ final class PawnMoveTests: MoveTests {
         XCTAssertEqual(controlled.count, 1)
         XCTAssertTrue(controlled.contains("c5"))
     }
+    
+    func test_enPassantAfterCheck() throws {
+        let boardLoader = ChessBoardLoader(chessBoard: chessBoard)
+        let fenLoader = FenLoader(boardLoader: boardLoader)
+        try fenLoader.load(fen: "6Q1/8/1r2kq2/3p2p1/3Pbp2/7P/6P1/R5K1 b - - 2 42")
+        
+        let executor = ChessMoveExecutor(chessboard: chessBoard)
+        let parser = NotationParser(moveExecutor: executor)
+        try parser.process("Kf5 g4+")
+        XCTAssertEqual(chessBoard.pgn.last, "g4+")
+        print("Checkboard status 2: \(chessBoard.status)")
+        XCTAssertEqual(chessBoard.status, .check(attacker: .white))
+        XCTAssertEqual(chessBoard.isCheckMated(.black), false)
+        XCTAssertEqual(chessBoard.isInCheck(.black), true)
+        try parser.process("fxg3")
+    }
 }
 
