@@ -37,14 +37,23 @@ public class NotationParser {
 
     public func process(_ txt: String) throws {
         logger.i("parsing \(txt)")
-        let language: Language = txt.contains("H") || txt.contains("S") || txt.contains("W") || txt.contains("G") ? .polish : .english
+        let language = detectLanguage(txt)
         let parts = Self.split(txt)
         for part in parts {
             logger.i("\(moveExecutor.chessboard.colorOnMove) makes move: \(part)")
             if isFinished(part) { break }
-            let command = try parseCastling(part) ?? parseSingleMove(part, language: language)
+            let command = try command(pgn: part, language: language)
             moveExecutor.process(command)
         }
+    }
+    
+    public func command(pgn: String, language: Language? = nil) throws -> ChessMoveCommand {
+        let language = language.or(detectLanguage(pgn))
+        return try parseCastling(pgn) ?? parseSingleMove(pgn, language: language)
+    }
+    
+    private func detectLanguage(_ txt: String) -> Language {
+        txt.contains("H") || txt.contains("S") || txt.contains("W") || txt.contains("G") ? .polish : .english
     }
     
     private func isFinished(_ part: String) -> Bool {
