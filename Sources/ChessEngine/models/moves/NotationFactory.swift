@@ -12,7 +12,7 @@ class NotationFactory {
         self.chessBoard = chessBoard
     }
     
-    // notation is composed for move that had already had place - pieces are
+    // notation is composed for move that had already had place - pieces are in new places
     func make(from command: ChessMoveCommand) -> String {
         var notation = ""
         switch command {
@@ -27,7 +27,7 @@ class NotationFactory {
                     .filter { $0.defends.contains(move.to) }
                     .filter { self.wasMoveAmbigious(move, for: $0) }
                     .first
-                if let otherSameTypePiece = otherSameTypePiece {//}, otherSameTypePiece.possibleMoves.contains(move.to) {
+                if let otherSameTypePiece = otherSameTypePiece {
                     if otherSameTypePiece.square.column == move.from.column {
                         notation.append("\(move.from.row)")
                     } else {

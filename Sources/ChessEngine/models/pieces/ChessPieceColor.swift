@@ -52,3 +52,14 @@ extension ChessPieceColor {
         }
     }
 }
+
+public extension ChessPieceColor {
+    var pawnCrawlDirection: MoveDirection {
+        switch self {
+        case .white:
+            return .up
+        case .black:
+            return .down
+        }
+    }
+}

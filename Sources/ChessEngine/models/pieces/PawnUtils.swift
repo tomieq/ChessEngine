@@ -10,12 +10,7 @@ struct PawnUtils {
     let color: ChessPieceColor
 
     var crawlingDirection: MoveDirection {
-        switch color {
-        case .white:
-            return .up
-        case .black:
-            return .down
-        }
+        color.pawnCrawlDirection
     }
 
     var attackDirections: [MoveDirection] {

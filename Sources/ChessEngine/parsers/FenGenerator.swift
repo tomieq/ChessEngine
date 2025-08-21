@@ -37,7 +37,7 @@ public class FenGenerator {
         var enPassantSquare = "-"
         if let lastMove = chessboard.movesHistory.last?.rawMove, let pawn = chessboard[lastMove.to],
            pawn.type == .pawn, abs(lastMove.from.row - lastMove.to.row) > 1,
-           let square = lastMove.from.move(PawnUtils(square: lastMove.from, color: pawn.color).crawlingDirection) {
+           let square = lastMove.from.move(pawn.color.pawnCrawlDirection) {
             enPassantSquare = square.description
         } else if let importedEnPassant = chessboard.possibleEnPassant {
             enPassantSquare = importedEnPassant.description
