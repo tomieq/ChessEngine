@@ -12,7 +12,7 @@ public enum FenLoaderError: Error {
 }
 
 public class FenLoader {
-    private let logger = Logger(FenLoader.self)
+    private let logger = L(FenLoader.self)
     private let boardLoader: ChessBoardLoader
     
     public init(boardLoader: ChessBoardLoader) {

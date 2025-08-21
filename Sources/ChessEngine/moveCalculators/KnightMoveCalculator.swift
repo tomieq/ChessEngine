@@ -9,7 +9,7 @@ import Foundation
 import Logger
 
 class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
-    private let logger = Logger(KnightMoveCalculator.self)
+    private let logger = L(KnightMoveCalculator.self)
     var moveCounter: Int = 0
     private var calculatedMoves: CalculatedMoves?
     

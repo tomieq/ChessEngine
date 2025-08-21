@@ -9,7 +9,7 @@ import Foundation
 import Logger
 
 class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
-    private let logger = Logger(PawnMoveCalculator.self)
+    private let logger = L(PawnMoveCalculator.self)
     var moveCounter: Int = 0
     private var calculatedMoves: CalculatedMoves?
     

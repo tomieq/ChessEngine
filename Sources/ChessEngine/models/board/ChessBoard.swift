@@ -11,7 +11,7 @@ import Logger
 typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
 public class ChessBoard {
-    private let logger = Logger(ChessBoard.self)
+    private let logger = L(ChessBoard.self)
     var possibleEnPassant: BoardSquare?
     public var colorOnMove: ChessPieceColor = .white
     private var pieces: [ChessPiece]

@@ -15,7 +15,7 @@ enum NotationParserError: Error {
 }
 
 public class NotationParser {
-    private let logger = Logger(NotationParser.self)
+    private let logger = L(NotationParser.self)
     private let moveExecutor: ChessMoveExecutor
 
     public init(moveExecutor: ChessMoveExecutor) {

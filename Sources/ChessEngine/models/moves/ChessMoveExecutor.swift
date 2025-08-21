@@ -11,7 +11,7 @@
 import Logger
 
 public class ChessMoveExecutor {
-    private let logger = Logger(ChessMoveExecutor.self)
+    private let logger = L(ChessMoveExecutor.self)
     let chessboard: ChessBoard
     public var moveListener: ((ChessMove) -> Void)?
     private var notationFactory: NotationFactory

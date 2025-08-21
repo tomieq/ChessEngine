@@ -30,7 +30,7 @@ public struct BoardSquare {
               let column = BoardColumn(firstLetter),
               let lastLetter = value.last,
               let row = Int("\(lastLetter)") else {
-            Logger(BoardSquare.self).e("Invalid text address(\(value)) while creating BoardSquare")
+            L(BoardSquare.self).e("Invalid text address(\(value)) while creating BoardSquare")
             return nil
         }
         self.column = column
@@ -49,7 +49,7 @@ extension BoardSquare: ExpressibleByStringLiteral {
               let column = BoardColumn(firstLetter),
               let lastLetter = value.last,
               let row = Int("\(lastLetter)") else {
-            Logger(BoardSquare.self).e("Invalid text address(\(value)) while creating BoardSquare")
+            L(BoardSquare.self).e("Invalid text address(\(value)) while creating BoardSquare")
             fatalError()
         }
         self.column = column

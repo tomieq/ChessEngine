@@ -9,7 +9,7 @@ import Foundation
 import Logger
 
 class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
-    private let logger = Logger(DistanceSniperMoveCalculator.self)
+    private let logger = L(DistanceSniperMoveCalculator.self)
     var moveCounter: Int = 0
     private var calculatedMoves: CalculatedMoves?
     
