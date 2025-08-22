@@ -8,8 +8,8 @@
 import Foundation
 
 class Bishop: DetachedChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
-        self.init(.bishop, color, square, longDistanceAttackDirections: MoveDirection.allDiagonal)
+    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare, id: String? = nil) {
+        self.init(.bishop, color, square, longDistanceAttackDirections: MoveDirection.allDiagonal, id: id.or(.chessPieceID.appending("B\(square)")))
     }
 }
 

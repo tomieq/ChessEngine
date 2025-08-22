@@ -12,14 +12,17 @@ class DetachedChessPiece {
     let color: ChessPieceColor
     let square: BoardSquare
     let longDistanceAttackDirections: [MoveDirection]
+    let id: String
     
     init(_ type: ChessPieceType, 
          _ color: ChessPieceColor,
          _ square: BoardSquare,
-         longDistanceAttackDirections: [MoveDirection] = []) {
+         longDistanceAttackDirections: [MoveDirection] = [],
+         id: String) {
         self.type = type
         self.color = color
         self.square = square
         self.longDistanceAttackDirections = longDistanceAttackDirections
+        self.id = id
     }
 }

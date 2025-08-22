@@ -12,6 +12,7 @@ final class ChessMoveExecutorTests: XCTestCase {
     func test_revert() throws {
         let chessboard = ChessBoard()
         chessboard.setupGame()
+        let id = chessboard["e2"]?.id
         let sut = ChessMoveExecutor(chessboard: chessboard)
         let parser = NotationParser(moveExecutor: sut)
         try parser.process("""
@@ -19,6 +20,7 @@ final class ChessMoveExecutorTests: XCTestCase {
         2. exf5 e6
         3. fxe6
         """)
+        XCTAssertEqual(id, chessboard["e6"]?.id)
         sut.revert()
         XCTAssertEqual(chessboard["e6"]?.type, .pawn)
         XCTAssertEqual(chessboard["f5"]?.type, .pawn)

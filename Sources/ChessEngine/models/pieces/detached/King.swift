@@ -7,11 +7,9 @@
 
 import Foundation
 
-
-
 class King: DetachedChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
-        self.init(.king, color, square)
+    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare, id: String? = nil) {
+        self.init(.king, color, square, id: id.or(.chessPieceID.appending("K\(square)")))
     }
 }
 

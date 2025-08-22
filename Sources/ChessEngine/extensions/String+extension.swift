@@ -61,3 +61,9 @@ extension String {
         String(self[..<index(startIndex, offsetBy: range.upperBound)])
     }
 }
+
+extension String {
+    static var chessPieceID: String {
+        UUID().uuidString.prefix(4).description.appending(".")
+    }
+}

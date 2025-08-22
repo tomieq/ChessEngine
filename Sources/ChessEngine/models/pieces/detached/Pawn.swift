@@ -8,8 +8,8 @@
 import Foundation
 
 class Pawn: DetachedChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
-        self.init(.pawn, color, square)
+    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare, id: String? = nil) {
+        self.init(.pawn, color, square, id: id.or(.chessPieceID.appending("P\(square)")))
     }
 }
 

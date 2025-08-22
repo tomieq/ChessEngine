@@ -53,7 +53,10 @@ class NotationFactoryTests: XCTestCase {
         let fenLoader = FenLoader(boardLoader: boardLoader)
         try fenLoader.load(fen: "6k1/4B3/8/K5P1/8/8/p7/1R6 b - - 0 3")
         let moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
+        let pawnID = chessBoard["a2"]?.id
+        XCTAssertNotNil(pawnID)
         moveExecutor.process(try commandFactory.make(from: "a2", to: "b1", promotedType: .rook))
         XCTAssertEqual(chessBoard.pgn.last, "axb1=R")
+        XCTAssertEqual(chessBoard["b1"]?.id, pawnID)
     }
 }

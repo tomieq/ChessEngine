@@ -29,12 +29,13 @@ public class ChessMoveExecutor {
             var changes: [ChessMove.Change] = []
             // with promotion
             if let promotedType = promotion {
+                let pawnID = chessboard[move.from]?.id
                 // build changes
                 changes.append(.remove(.pawn, color, from: move.from))
                 changes.append(.add(promotedType, color, to: move.to))
                 // update the local board
                 chessboard.remove(move.from)
-                chessboard.add(promotedType.gamePiece(color: color, square: move.to))
+                chessboard.add(promotedType.gamePiece(color: color, square: move.to, id: pawnID))
             } else {
                 // build changes
                 changes.append(.move(move))
@@ -62,12 +63,13 @@ public class ChessMoveExecutor {
                 changes.append(.remove(removedPiece.type, removedPiece.color, from: move.to))
             }
             if let promotedType = promotion {
+                let pawnID = chessboard[move.from]?.id
                 // build changes
                 changes.append(.remove(.pawn, color, from: move.from))
                 changes.append(.add(promotedType, color, to: move.to))
                 // update the local board
                 chessboard.remove(move.to, move.from)
-                chessboard.add(promotedType.gamePiece(color: chessboard.colorOnMove, square: move.to))
+                chessboard.add(promotedType.gamePiece(color: chessboard.colorOnMove, square: move.to, id: pawnID))
                 logger.i("Pawn at \(move.to) becomes \(promotedType)")
             } else {
                 // build changes

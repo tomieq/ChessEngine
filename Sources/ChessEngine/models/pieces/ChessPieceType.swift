@@ -19,20 +19,20 @@ public enum ChessPieceType: CaseIterable {
 extension ChessPieceType: Sendable {}
 
 extension ChessPieceType {
-    func gamePiece(color: ChessPieceColor, square: BoardSquare) -> GamePiece? {
+    func gamePiece(color: ChessPieceColor, square: BoardSquare, id: String? = nil) -> GamePiece? {
         switch self {
         case .king:
-            return King(color, square)
+            return King(color, square, id: id)
         case .queen:
-            return Queen(color, square)
+            return Queen(color, square, id: id)
         case .rook:
-            return Rook(color, square)
+            return Rook(color, square, id: id)
         case .bishop:
-            return Bishop(color, square)
+            return Bishop(color, square, id: id)
         case .knight:
-            return Knight(color, square)
+            return Knight(color, square, id: id)
         case .pawn:
-            return Pawn(color, square)
+            return Pawn(color, square, id: id)
         }
     }
 }

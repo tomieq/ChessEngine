@@ -58,6 +58,7 @@ class NotationParserTests: XCTestCase {
     func test_enPassantWhite() throws {
         let executor = moveExecutor
         let sut = NotationParser(moveExecutor: executor)
+        let pawnID = executor.chessboard["e2"]?.id
         try sut.process("""
         e4 h6
         e5 d5
@@ -66,6 +67,7 @@ class NotationParserTests: XCTestCase {
         let lastMove = executor.chessboard.movesHistory.last
         XCTAssertEqual(lastMove?.notation, "exd6")
         XCTAssertEqual(lastMove?.changes.contains(.remove(.pawn, .black, from: "d5")), true)
+        XCTAssertEqual(pawnID, executor.chessboard["d6"]?.id)
     }
     
     func test_enPassantBlack() throws {
