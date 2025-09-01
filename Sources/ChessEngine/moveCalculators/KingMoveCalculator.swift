@@ -123,7 +123,7 @@ class KingMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               defends: defends,
                                               defenders: defenders,
                                               controlledSquares: controlledSquares,
-                                              pinInfo: nil)
+                                              observation: nil)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves
     }

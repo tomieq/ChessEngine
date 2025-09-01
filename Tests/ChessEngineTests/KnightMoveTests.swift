@@ -37,9 +37,8 @@ final class KnightMoveTests: MoveTests {
         XCTAssertEqual(possibleVictims(for: "f2").count, 0)
         XCTAssertEqual(possibleMoves(from: "f2").count, 0)
         XCTAssertEqual(possibleAttackers(for: "f2"), ["h4"])
-        let pinInfo = pinInfo(for: "f2")
-        XCTAssertEqual(pinInfo?.attacker.square, "h4")
-        XCTAssertEqual(pinInfo?.coveredVictim.square, "e1")
+        let observation = observation(for: "f2")
+        XCTAssertEqual(observation, .pinnedToKing(pinnedPiece: chessBoard["f2"]!, attacker: chessBoard["h4"]!))
     }
     
     func test_movePinnedByRook() {
@@ -49,9 +48,8 @@ final class KnightMoveTests: MoveTests {
         XCTAssertEqual(possibleVictims(for: "d1").count, 0)
         XCTAssertEqual(possibleMoves(from: "d1").count, 0)
         XCTAssertEqual(possibleAttackers(for: "d1"), ["a1"])
-        let pinInfo = pinInfo(for: "d1")
-        XCTAssertEqual(pinInfo?.attacker.square, "a1")
-        XCTAssertEqual(pinInfo?.attacker.type, .rook)
+        let observation = observation(for: "d1")
+        XCTAssertEqual(observation, .pinnedToKing(pinnedPiece: chessBoard["d1"]!, attacker: chessBoard["a1"]!))
     }
     
     func test_movePinnedByQueen() {
@@ -140,18 +138,15 @@ final class KnightMoveTests: MoveTests {
         ChessBoardLoader(chessBoard: chessBoard)
             .load(.white, "Qe1 Ke2 Nf2")
             .load(.black, "Bh4")
-        let pinInfo = pinInfo(for: "f2")
-        XCTAssertEqual(pinInfo?.attacker.square, "h4")
-        XCTAssertEqual(pinInfo?.attacker.type, .bishop)
-        XCTAssertEqual(pinInfo?.coveredVictim.square, "e1")
-        XCTAssertEqual(pinInfo?.coveredVictim.type, .queen)
+        let observation = observation(for: "f2")
+        XCTAssertEqual(observation, .pinned(pinnedPiece: chessBoard["f2"]!, attacker: chessBoard["h4"]!, coveredPiece: chessBoard["e1"]!))
     }
     
     func test_bishopPinnedByBishop() {
         ChessBoardLoader(chessBoard: chessBoard)
             .load(.white, "Be1 Ke2 Nf2")
             .load(.black, "Bh4")
-        XCTAssertNil(pinInfo(for: "f2"))
+        XCTAssertNil(observation(for: "f2"))
     }
 }
 

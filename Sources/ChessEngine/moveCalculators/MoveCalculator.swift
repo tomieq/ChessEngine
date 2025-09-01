@@ -28,7 +28,7 @@ protocol MoveCalculator {
     var controlledSquares: [BoardSquare] { get }
 
     // tells whether this piece is pinned (attacker's weight is less than covered weight)
-    var pinInfo: PinInfo? { get }
+    var observation: ChessObservation? { get }
 }
 
 protocol MoveCalculatorProvider {
@@ -60,7 +60,7 @@ extension MoveCalculator where Self: MoveCalculatorProvider {
         analize().controlledSquares
     }
     
-    var pinInfo: PinInfo? {
-        analize().pinInfo
+    var observation: ChessObservation? {
+        analize().observation
     }
 }

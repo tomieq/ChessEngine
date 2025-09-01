@@ -65,8 +65,8 @@ extension ChessPiece: MoveCalculator {
         moveCalculator.controlledSquares
     }
     
-    public var pinInfo: PinInfo? {
-        moveCalculator.pinInfo
+    public var observation: ChessObservation? {
+        moveCalculator.observation
     }
 }
 

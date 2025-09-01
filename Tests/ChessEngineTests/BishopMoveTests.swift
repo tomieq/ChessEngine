@@ -106,11 +106,9 @@ class BishopMoveTests: MoveTests {
         XCTAssertEqual(possibleAttackers(for: "d4"), ["b4"])
         XCTAssertEqual(defenders(for: "d4"), ["d1"])
         XCTAssertEqual(defended(from: "d4").count, 0)
-        let pinInfo = pinInfo(for: "d4")
-        XCTAssertEqual(pinInfo?.attacker.square, "b4")
-        XCTAssertEqual(pinInfo?.attacker.type, .rook)
-        XCTAssertEqual(pinInfo?.coveredVictim.square, "g4")
-        XCTAssertEqual(pinInfo?.coveredVictim.type, .king)
+        
+        let observation = observation(for: "d4")
+        XCTAssertEqual(observation, .pinnedToKing(pinnedPiece: chessBoard["d4"]!, attacker: chessBoard["b4"]!))
     }
     
     func test_bishopIsDefendedByTwoRooks() {
@@ -204,11 +202,10 @@ class BishopMoveTests: MoveTests {
         ChessBoardLoader(chessBoard: chessBoard)
             .load(.white, "Qg4 Ka1 Bd4 Rd1")
             .load(.black, "Ke8 Rb4")
-        let pinInfo = pinInfo(for: "d4")
-        XCTAssertEqual(pinInfo?.attacker.square, "b4")
-        XCTAssertEqual(pinInfo?.attacker.type, .rook)
-        XCTAssertEqual(pinInfo?.coveredVictim.square, "g4")
-        XCTAssertEqual(pinInfo?.coveredVictim.type, .queen)
+        let observation = observation(for: "d4")
+        XCTAssertEqual(observation, .pinned(pinnedPiece: chessBoard["d4"]!,
+                                            attacker: chessBoard["b4"]!,
+                                            coveredPiece: chessBoard["g4"]!))
     }
 }
 

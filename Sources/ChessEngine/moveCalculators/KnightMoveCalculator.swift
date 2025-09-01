@@ -57,7 +57,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
-        var pinInfo: PinInfo?
+        var observation: ChessObservation?
         
         var allowedSquares = square.knightMoves
         // check if move is pinned and update defenders and attackers
@@ -72,15 +72,15 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                     hasDefenderFromThisDirection = true
                 } else if hasDefenderFromThisDirection.not {
                     possibleAttackers.append(piece.square)
-                    if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
-                       oppositeDirectionPiece.color == self.color,
-                       oppositeDirectionPiece.type.weight > self.type.weight {
-                        logger.i("knight at \(square) is pinned by \(piece.square), covered piece: \(oppositeDirectionPiece)")
-                        if oppositeDirectionPiece.type == .king {
+                    if let coveredPiece = self.nearestPiece(in: direction.opposite),
+                       coveredPiece.color == self.color,
+                       coveredPiece.type.weight > self.type.weight {
+                        logger.i("knight at \(square) is pinned by \(piece.square), covered piece: \(coveredPiece)")
+                        if coveredPiece.type == .king {
                             allowedSquares = []
-                        }
-                        if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            pinInfo = PinInfo(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                            observation = .pinnedToKing(pinnedPiece: chessBoard[square]!, attacker: piece)
+                        } else if piece.type.weight < coveredPiece.type.weight {
+                            observation = .pinned(pinnedPiece: chessBoard[square]!, attacker: piece, coveredPiece: coveredPiece)
                         }
                     }
                 }
@@ -158,7 +158,7 @@ class KnightMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               defends: defends,
                                               defenders: defenders,
                                               controlledSquares: controlledSquares,
-                                              pinInfo: pinInfo)
+                                              observation: observation)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves
     }

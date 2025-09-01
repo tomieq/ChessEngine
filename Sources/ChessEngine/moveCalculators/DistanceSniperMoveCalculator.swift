@@ -59,7 +59,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
-        var pinInfo: PinInfo?
+        var observation: ChessObservation?
         var allowedDirections = self.longDistanceAttackDirections
         
         // find all knight attackers and defenders
@@ -106,16 +106,16 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                     hasDefenderFromThisDirection = true
                 } else if hasDefenderFromThisDirection.not {
                     possibleAttackers.append(piece.square)
-                    if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
-                       oppositeDirectionPiece.color == self.color,
-                       oppositeDirectionPiece.type.weight > self.type.weight {
-                        logger.i("\(color) \(type) at \(square) is pinned by \(piece.square), covered piece: \(oppositeDirectionPiece)")
+                    if let coveredPiece = self.nearestPiece(in: direction.opposite),
+                       coveredPiece.color == self.color,
+                       coveredPiece.type.weight > self.type.weight {
+                        logger.i("\(color) \(type) at \(square) is pinned by \(piece.square), covered piece: \(coveredPiece)")
                         
-                        if oppositeDirectionPiece.type == .king {
+                        if coveredPiece.type == .king {
                             allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
-                        }
-                        if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            pinInfo = PinInfo(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                            observation = .pinnedToKing(pinnedPiece: chessBoard[square]!, attacker: piece)
+                        } else if piece.type.weight < coveredPiece.type.weight {
+                            observation = .pinned(pinnedPiece: chessBoard[square]!, attacker: piece, coveredPiece: coveredPiece)
                         }
                     }
                 }
@@ -162,7 +162,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               defends: defends,
                                               defenders: defenders,
                                               controlledSquares: controlledSquares,
-                                              pinInfo: pinInfo)
+                                              observation: observation)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves
     }

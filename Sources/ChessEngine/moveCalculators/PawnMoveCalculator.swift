@@ -61,7 +61,7 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
-        var pinInfo: PinInfo?
+        var observation: ChessObservation?
         
         // find all knight attackers and defenders
         for position in square.knightMoves {
@@ -106,9 +106,9 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                         logger.i("pawn at \(square) is pinned by \(piece), covered piece: \(oppositeDirectionPiece)")
                         if oppositeDirectionPiece.type == .king {
                             allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
-                        }
-                        if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            pinInfo = PinInfo(attacker: piece, coveredVictim: oppositeDirectionPiece)
+                            observation = .pinnedToKing(pinnedPiece: chessBoard[square]!, attacker: piece)
+                        } else if piece.type.weight < oppositeDirectionPiece.type.weight {
+                            observation = .pinned(pinnedPiece: chessBoard[square]!, attacker: piece, coveredPiece: oppositeDirectionPiece)
                         }
                     }
                 }
@@ -206,7 +206,7 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                                               defends: defends,
                                               defenders: defenders,
                                               controlledSquares: controlledSquares,
-                                              pinInfo: pinInfo)
+                                              observation: observation)
         self.calculatedMoves = calculatedMoves
         return calculatedMoves
     }
