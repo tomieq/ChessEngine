@@ -15,6 +15,26 @@ public enum ChessObservation {
     case fork(victims: Set<ChessPiece>, attacker: ChessPiece)
     case check(attackers: Set<ChessPiece>)
     case checkMate(attackers: Set<ChessPiece>)
+    
+    var simple: ChessSimpleObservation {
+        switch self {
+        case .pinnedToKing: .pinnedToKing
+        case .pinned:       .pinned
+        case .freePiece:    .freePiece
+        case .fork:         .fork
+        case .check:        .check
+        case .checkMate:    .checkMate
+        }
+    }
+}
+
+public enum ChessSimpleObservation {
+    case pinnedToKing
+    case pinned
+    case freePiece
+    case fork
+    case check
+    case checkMate
 }
 
 extension ChessObservation {
@@ -47,3 +67,5 @@ extension ChessObservation: Equatable {
         return lhs.hashValue == rhs.hashValue
     }
 }
+
+extension ChessSimpleObservation: Equatable {}
