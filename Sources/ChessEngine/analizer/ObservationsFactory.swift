@@ -6,6 +6,8 @@
 //
 import SwiftExtensions
 
+public typealias ChessObservations = [ChessPieceColor: Set<ChessObservation>]
+
 public class ObservationsFactory {
     let chessboard: ChessBoard
     
@@ -13,7 +15,7 @@ public class ObservationsFactory {
         self.chessboard = chessboard
     }
     
-    public func analize() -> [ChessPieceColor: Set<ChessObservation>] {
+    public func analize() -> ChessObservations {
         var observations: [ChessPieceColor: Set<ChessObservation>] = [.white: Set(), .black: Set()]
         
         switch chessboard.status {
