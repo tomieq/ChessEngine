@@ -23,10 +23,10 @@ class ObservationsFactoryTests: MoveTests {
         let check = ChessObservation.check(attackers: [board["g4"]!].set)
         let freePiece = ChessObservation.freePiece(freePiece: board["h3"]!, attacker: board["g4"]!)
         
-        XCTAssertEqual(observations.white.count, 3)
-        XCTAssertTrue(observations.white.contains(fork))
-        XCTAssertTrue(observations.white.contains(check))
-        XCTAssertTrue(observations.white.contains(freePiece))
+        XCTAssertEqual(observations[.white]?.count, 3)
+        XCTAssertEqual(observations[.white]?.contains(fork), true)
+        XCTAssertEqual(observations[.white]?.contains(check), true)
+        XCTAssertEqual(observations[.white]?.contains(freePiece), true)
     }
     
     func testNightForkOnKingAndQeen() throws {
@@ -41,10 +41,10 @@ class ObservationsFactoryTests: MoveTests {
         let check = ChessObservation.check(attackers: [board["f4"]!, board["g6"]!].set)
         let freePiece = ChessObservation.freePiece(freePiece: board["e2"]!, attacker: board["f4"]!)
         
-        XCTAssertEqual(observations.black.count, 3)
-        XCTAssertTrue(observations.black.contains(fork))
-        XCTAssertTrue(observations.black.contains(check))
-        XCTAssertTrue(observations.black.contains(freePiece))
+        XCTAssertEqual(observations[.black]?.count, 3)
+        XCTAssertEqual(observations[.black]?.contains(fork), true)
+        XCTAssertEqual(observations[.black]?.contains(check), true)
+        XCTAssertEqual(observations[.black]?.contains(freePiece), true)
     }
     
     func testNightTripleFork() throws {
@@ -59,10 +59,10 @@ class ObservationsFactoryTests: MoveTests {
         let check = ChessObservation.check(attackers: [board["f7"]!].set)
         let freePiece = ChessObservation.freePiece(freePiece: board["d8"]!, attacker: board["f7"]!)
         
-        XCTAssertEqual(observations.white.count, 3)
-        XCTAssertTrue(observations.white.contains(fork))
-        XCTAssertTrue(observations.white.contains(check))
-        XCTAssertTrue(observations.white.contains(freePiece))
+        XCTAssertEqual(observations[.white]?.count, 3)
+        XCTAssertEqual(observations[.white]?.contains(fork), true)
+        XCTAssertEqual(observations[.white]?.contains(check), true)
+        XCTAssertEqual(observations[.white]?.contains(freePiece), true)
     }
     
     func testPawnFork() throws {
@@ -77,10 +77,10 @@ class ObservationsFactoryTests: MoveTests {
         let pin = ChessObservation.pinned(pinnedPiece: board["f6"]!, attacker: board["g5"]!, coveredPiece: board["d8"]!)
         let freePiece = ChessObservation.freePiece(freePiece: board["c6"]!, attacker: board["d5"]!)
         
-        XCTAssertEqual(observations.white.count, 3)
-        XCTAssertTrue(observations.white.contains(fork))
-        XCTAssertTrue(observations.white.contains(pin))
-        XCTAssertTrue(observations.white.contains(freePiece))
+        XCTAssertEqual(observations[.white]?.count, 3)
+        XCTAssertEqual(observations[.white]?.contains(fork), true)
+        XCTAssertEqual(observations[.white]?.contains(pin), true)
+        XCTAssertEqual(observations[.white]?.contains(freePiece), true)
     }
     
     func testRookFork() throws {
@@ -94,10 +94,10 @@ class ObservationsFactoryTests: MoveTests {
         let fork = ChessObservation.fork(victims: [board["b7"]!, board["h7"]!], attacker: board["d7"]!)
         let check = ChessObservation.check(attackers: [board["d7"]!].set)
         let freePiece = ChessObservation.freePiece(freePiece: board["b7"]!, attacker: board["d7"]!)
-        XCTAssertEqual(observations.white.count, 3)
-        XCTAssertTrue(observations.white.contains(fork))
-        XCTAssertTrue(observations.white.contains(check))
-        XCTAssertTrue(observations.white.contains(freePiece))
+        XCTAssertEqual(observations[.white]?.count, 3)
+        XCTAssertEqual(observations[.white]?.contains(fork), true)
+        XCTAssertEqual(observations[.white]?.contains(check), true)
+        XCTAssertEqual(observations[.white]?.contains(freePiece), true)
     }
     
     func testPin() throws {
@@ -107,8 +107,8 @@ class ObservationsFactoryTests: MoveTests {
         let loader = FenLoader(boardLoader: ChessBoardLoader(chessBoard: board))
         try loader.load(fen: fen)
         let observations = analizer.analize()
-        XCTAssertEqual(observations.white.count, 1)
-        XCTAssertEqual(observations.white.first, .pinnedToKing(pinnedPiece: board["d7"]!, attacker: board["b5"]!))
+        XCTAssertEqual(observations[.white]?.count, 1)
+        XCTAssertEqual(observations[.white]?.first, .pinnedToKing(pinnedPiece: board["d7"]!, attacker: board["b5"]!))
     }
     
     func testFreeBlackPawn() throws {
@@ -120,7 +120,7 @@ class ObservationsFactoryTests: MoveTests {
         let observations = analizer.analize()
 
         let freePiece = ChessObservation.freePiece(freePiece: board["e5"]!, attacker: board["f3"]!)
-        XCTAssertEqual(observations.white.count, 1)
-        XCTAssertTrue(observations.white.contains(freePiece))
+        XCTAssertEqual(observations[.white]?.count, 1)
+        XCTAssertEqual(observations[.white]?.contains(freePiece), true)
     }
 }

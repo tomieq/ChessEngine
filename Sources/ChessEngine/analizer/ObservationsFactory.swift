@@ -13,10 +13,8 @@ public class ObservationsFactory {
         self.chessboard = chessboard
     }
     
-    public func analize() -> ChessObservations {
-        
-        var whiteObservations: [ChessObservation] = []
-        var blackObservations: [ChessObservation] = []
+    public func analize() -> [ChessPieceColor: Set<ChessObservation>] {
+        var observations: [ChessPieceColor: Set<ChessObservation>] = [.white: Set(), .black: Set()]
         
         switch chessboard.status {
         case .normal:
@@ -24,48 +22,31 @@ public class ObservationsFactory {
         case .check(let attackerColor):
             let attackers = chessboard.king(color: attackerColor.other)?.possibleAttackers.compactMap { chessboard[$0] }
             let observation = ChessObservation.check(attackers: attackers.or(.empty).set)
-            switch attackerColor {
-            case .white: whiteObservations.append(observation)
-            case .black: blackObservations.append(observation)
-            }
+            observations[attackerColor]?.insert(observation)
         case .checkmate(let winnerColor):
             let attackers = chessboard.king(color: winnerColor.other)?.possibleAttackers.compactMap { chessboard[$0] }
             let observation = ChessObservation.checkMate(attackers: attackers.or(.empty).set)
-            switch winnerColor {
-            case .white: return ChessObservations(white: [observation], black: [])
-            case .black: return ChessObservations(white: [], black: [observation])
-            }
+            observations[winnerColor]?.insert(observation)
         }
         
         chessboard.allPieces.forEach { piece in
             piece.observation.onValue { observation in
-                switch piece.color.other {
-                case .white: whiteObservations.append(observation)
-                case .black: blackObservations.append(observation)
-                }
+                observations[piece.color.other]?.insert(observation)
             }
         }
         chessboard.allPieces.forEach { piece in
             if case .fork(let victims, let attacker) = getFork(attacker: piece) {
-                attacker.color.on(.black) {
-                    blackObservations.append(.fork(victims: victims, attacker: attacker))
-                }.on(.white) {
-                    whiteObservations.append(.fork(victims: victims, attacker: attacker))
-                }
+                observations[attacker.color]?.insert(.fork(victims: victims, attacker: attacker))
             }
         }
         
         chessboard.allPieces.filter{ $0.type.isKing.not }.forEach { piece in
             if piece.defenders.isEmpty, let square = piece.possibleAttackers.first, let attacker = chessboard[square] {
-                piece.color.on(.black) {
-                    whiteObservations.append(.freePiece(freePiece: piece, attacker: attacker))
-                }.on(.white) {
-                    blackObservations.append(.freePiece(freePiece: piece, attacker: attacker))
-                }
+                observations[piece.color.other]?.insert(.freePiece(freePiece: piece, attacker: attacker))
             }
         }
 
-        return ChessObservations(white: whiteObservations.set, black: blackObservations.set)
+        return observations
     }
     
     
