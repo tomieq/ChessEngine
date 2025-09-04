@@ -16,7 +16,7 @@ public class ObservationsFactory {
     }
     
     public func analize() -> ChessObservations {
-        var observations: [ChessPieceColor: Set<ChessObservation>] = [.white: Set(), .black: Set()]
+        var observations: ChessObservations = [.white: Set(), .black: Set()]
         
         switch chessboard.status {
         case .normal:
@@ -49,7 +49,10 @@ public class ObservationsFactory {
             }
         }
 
-        return observations
+        var frozen = ChessObservations()
+        frozen[.white] = observations[.white]?.map { $0.frozen }.set
+        frozen[.black] = observations[.black]?.map { $0.frozen }.set
+        return frozen
     }
     
     

@@ -74,3 +74,33 @@ extension ChessObservation: Equatable {
 }
 
 extension ChessSimpleObservation: Equatable {}
+
+extension ChessObservation {
+    var frozen: ChessObservation {
+        switch self {
+        case .pinnedToKing(pinnedPiece: let pinnedPiece, attacker: let attacker):
+                .pinnedToKing(pinnedPiece: pinnedPiece.frozen, attacker: attacker.frozen)
+        case .pinned(pinnedPiece: let pinnedPiece, attacker: let attacker, coveredPiece: let coveredPiece):
+                .pinned(pinnedPiece: pinnedPiece.frozen, attacker: attacker.frozen, coveredPiece: coveredPiece.frozen)
+        case .freePiece(freePiece: let freePiece, attacker: let attacker):
+                .freePiece(freePiece: freePiece.frozen, attacker: attacker.frozen)
+        case .fork(victims: let victims, attacker: let attacker):
+                .fork(victims: victims.map { $0.frozen }.set, attacker: attacker.frozen)
+        case .discoveredAttack(victim: let victim, attacker: let attacker):
+                .discoveredAttack(victim: victim.frozen, attacker: attacker.frozen)
+        case .check(attackers: let attackers):
+                .check(attackers: attackers.map { $0.frozen }.set)
+        case .checkMate(attackers: let attackers):
+                .checkMate(attackers: attackers.map { $0.frozen }.set)
+        }
+    }
+    
+    public var forkedVictims: Set<ChessPiece> {
+        switch self {
+        case .fork(victims: let victims, attacker: _):
+            return victims
+        default:
+            return []
+        }
+    }
+}
