@@ -15,7 +15,7 @@ public class ChessBoard {
     var possibleEnPassant: BoardSquare?
     public var colorOnMove: ChessPieceColor = .white
     private var pieces: [ChessPiece]
-    private var listeners: [(ChessBoardEvent) -> Void] = []
+    private var listeners: [String: (ChessBoardEvent) -> Void] = [:]
     public var movesHistory: [ChessMove] = []
     public var pgn: [String] {
         movesHistory.map { $0.notation }
@@ -42,12 +42,16 @@ public class ChessBoard {
         }
     }
 
-    func subscribe(subscriber: @escaping (ChessBoardEvent) -> Void) {
-        self.listeners.append(subscriber)
+    func subscribe(id: String, subscriber: @escaping (ChessBoardEvent) -> Void) {
+        self.listeners[id] = subscriber
+    }
+    
+    func unsubscribe(id: String) {
+        self.listeners[id] = nil
     }
     
     private func broadcast(event: ChessBoardEvent) {
-        listeners.forEach { $0(event) }
+        listeners.forEach { $0.value(event) }
     }
     
     @discardableResult

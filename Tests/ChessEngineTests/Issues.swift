@@ -136,7 +136,6 @@ class Issues: XCTestCase {
         let boardLoader = ChessBoardLoader(chessBoard: chessboard)
         let sut = FenLoader(boardLoader: boardLoader)
         try sut.load(fen: "rnb1kr2/5Npp/p1pP4/1p6/4n3/2P1q3/PN2B1PP/R2QR2K w q - 4 20")
-        let fenGenerator = FenGenerator(chessboard: chessboard)
         let moveExecutor = ChessMoveExecutor(chessboard: chessboard)
         let parser = NotationParser(moveExecutor: moveExecutor)
         let pngs = [

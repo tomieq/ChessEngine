@@ -17,6 +17,7 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
     private var square: BoardSquare
     private let color: ChessPieceColor
     private let type: ChessPieceType
+    private let id = UUID().uuidString
     private let longDistanceAttackDirections: [MoveDirection]
     
     init(for piece: DetachedChessPiece, on chessBoard: ChessBoard, longDistanceAttackDirections: [MoveDirection]) {
@@ -25,11 +26,19 @@ class DistanceSniperMoveCalculator: MoveCalculator, MoveCalculatorProvider {
         self.type = piece.type
         self.chessBoard = chessBoard
         self.longDistanceAttackDirections = longDistanceAttackDirections
-        self.chessBoard.subscribe { [weak self] event in
+        self.chessBoard.subscribe(id: id) { [weak self] event in
             self?.gameChanged(event)
         }
     }
     
+    deinit {
+        disconnect()
+    }
+    
+    func disconnect() {
+        self.chessBoard.unsubscribe(id: id)
+    }
+
     private func gameChanged(_ event: ChessBoardEvent) {
         switch event.change {
         case .pieceMoved(let move):

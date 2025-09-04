@@ -14,14 +14,23 @@ class KingMoveCalculator: MoveCalculator, MoveCalculatorProvider {
     let chessBoard: ChessBoard
     private var square: BoardSquare
     private var color: ChessPieceColor
+    private let id = UUID().uuidString
     
     init(for piece: DetachedChessPiece, on chessBoard: ChessBoard) {
         self.square = piece.square
         self.color = piece.color
         self.chessBoard = chessBoard
-        self.chessBoard.subscribe { [weak self] event in
+        self.chessBoard.subscribe(id: id) { [weak self] event in
             self?.gameChanged(event)
         }
+    }
+    
+    deinit {
+        disconnect()
+    }
+    
+    func disconnect() {
+        self.chessBoard.unsubscribe(id: id)
     }
     
     private func gameChanged(_ event: ChessBoardEvent) {
