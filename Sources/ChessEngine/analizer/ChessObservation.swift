@@ -17,7 +17,7 @@ public enum ChessObservation {
     case check(attackers: Set<ChessPiece>)
     case checkMate(attackers: Set<ChessPiece>)
     
-    var simple: ChessSimpleObservation {
+    public var simple: ChessSimpleObservation {
         switch self {
         case .pinnedToKing:     .pinnedToKing
         case .pinned:           .pinned
