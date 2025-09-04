@@ -15,6 +15,7 @@ public struct ChessMove {
     public let notation: String
     public let changes: [Change]
     public let status: ChessGameStatus
+    public let movedPieces: Set<ChessPiece> // pieces are on their new squares
 }
 
 extension ChessMove.Change: Equatable {}

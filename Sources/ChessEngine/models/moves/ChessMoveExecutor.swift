@@ -9,6 +9,7 @@
 // It stores moves in order to be able ro reverse them
 // It also produces ChessMove events so external UI can be updated (moveListener)
 import Logger
+import SwiftExtensions
 
 public class ChessMoveExecutor {
     private let logger = L(ChessMoveExecutor.self)
@@ -55,7 +56,8 @@ public class ChessMoveExecutor {
             register(ChessMove(color: color,
                                notation: self.notationFactory.make(from: command),
                                changes: changes,
-                               status: chessboard.status))
+                               status: chessboard.status,
+                               movedPieces: chessboard[move.to]?.frozen.set ?? Set()))
         case .take(let move, let promotion):
             logger.i("\(chessboard[move.from]!.color) \(chessboard[move.from]!.type) from \(move.from) takes \(chessboard[move.to]!.type) on \(move.to)")
             var changes: [ChessMove.Change] = []
@@ -80,7 +82,8 @@ public class ChessMoveExecutor {
             register(ChessMove(color: color,
                                notation:  self.notationFactory.make(from: command),
                                changes: changes,
-                               status: chessboard.status))
+                               status: chessboard.status,
+                               movedPieces: chessboard[move.to]?.frozen.set ?? Set()))
 
         case .castling(let castling):
             // update the local board
@@ -89,14 +92,16 @@ public class ChessMoveExecutor {
             register(ChessMove(color: color,
                                notation:  self.notationFactory.make(from: command),
                                changes: castling.moves.map { .move($0) },
-                               status: chessboard.status))
+                               status: chessboard.status,
+                               movedPieces: Set(castling.moves.compactMap{ chessboard[$0.to]?.frozen })))
         case .enPassant(let move, let takenSquare):
             chessboard.move(move)
             chessboard.remove(takenSquare)
             register(ChessMove(color: color,
                                notation:  self.notationFactory.make(from: command),
                                changes: [.move(move), .remove(.pawn, color.other, from: takenSquare)],
-                               status: chessboard.status))
+                               status: chessboard.status,
+                               movedPieces: chessboard[move.to]?.frozen.set ?? Set()))
         }
         chessboard.colorOnMove = chessboard.colorOnMove.other
     }
@@ -136,7 +141,14 @@ public class ChessMoveExecutor {
         let reverseMove = ChessMove(color: move.color,
                                     notation: move.notation,
                                     changes: revertedChanges,
-                                    status: move.status)
+                                    status: move.status,
+                                    movedPieces: move.movedPieces)
         moveListener?(reverseMove)
+    }
+}
+
+fileprivate extension ChessPiece {
+    var set: Set<ChessPiece> {
+        Set([self])
     }
 }

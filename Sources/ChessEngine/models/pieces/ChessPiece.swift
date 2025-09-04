@@ -34,6 +34,15 @@ public struct ChessPiece {
                                       id: self.id),
                    moveCalculator)
     }
+    
+    var frozen: ChessPiece {
+        ChessPiece(DetachedChessPiece(type,
+                                      color,
+                                      square,
+                                      longDistanceAttackDirections: longDistanceAttackDirections,
+                                      id: self.id),
+                   FrozenMoveCalculator(originalCalculator: moveCalculator))
+    }
 }
 
 extension ChessPiece: MoveCalculator {
