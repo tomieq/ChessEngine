@@ -35,10 +35,11 @@ public class ObservationsFactory {
             piece.observation.onValue { observation in
                 observations[piece.color.other]?.insert(observation)
             }
-        }
-        chessboard.allPieces.forEach { piece in
-            if case .fork(let victims, let attacker) = getFork(attacker: piece) {
-                observations[attacker.color]?.insert(.fork(victims: victims, attacker: attacker))
+            if let observation = getFork(attacker: piece) {
+                observations[piece.color]?.insert(observation)
+            }
+            if let observation = getDiscovery(attacker: piece) {
+                observations[piece.color]?.insert(observation)
             }
         }
         
@@ -80,6 +81,32 @@ public class ObservationsFactory {
             return nil
         }
         return .fork(victims: victims.set, attacker: attacker)
+    }
+    
+    private func getDiscovery(attacker: ChessPiece) -> ChessObservation? {
+        guard let lastMove = chessboard.movesHistory.last,
+              lastMove.movedPieces.contains(attacker).not,
+              let freedSquare = lastMove.rawMove?.from else {
+            return nil
+        }
+        guard attacker.longDistanceAttackDirections.isEmpty.not else {
+            return nil
+        }
+        let victims = attacker.possibleVictims
+            .compactMap { chessboard[$0] }
+            .filter { victim in
+                guard victim.type.isKing.not else {  return false }
+                guard victim.type.weight > attacker.type.weight || victim.defenders.isEmpty else { return false }
+                let path = attacker.square.path(to: victim.square)
+                guard path.contains(freedSquare) else {
+                    return false
+                }
+                return true
+            }
+        guard let victim = victims.first else {
+            return nil
+        }
+        return .discoveredAttack(victim: victim, attacker: attacker)
     }
 }
 

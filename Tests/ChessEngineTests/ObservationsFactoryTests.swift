@@ -123,4 +123,21 @@ class ObservationsFactoryTests: MoveTests {
         XCTAssertEqual(observations[.white]?.count, 1)
         XCTAssertEqual(observations[.white]?.contains(freePiece), true)
     }
+    
+    func testDiscoveredAttack() throws {
+        let fen = "3rr1k1/pp2bpp1/2p4p/3p2q1/8/P3PPB1/1PP1QP1P/1K1R2R1 w - - 0 1"
+        let board = ChessBoard()
+        let loader = FenLoader(boardLoader: ChessBoardLoader(chessBoard: board))
+        try loader.load(fen: fen)
+        
+        let moveExecutor = ChessMoveExecutor(chessboard: board)
+        let commandFactory = ChessMoveCommandFactory(chessboard: board)
+        try moveExecutor.process(commandFactory.make(from: "g3", to: "c7"))
+        let analizer = ObservationsFactory(chessboard: board)
+        let observations = analizer.analize()
+        
+        let discovery = ChessObservation.discoveredAttack(victim: board["g5"]!, attacker: board["g1"]!)
+        XCTAssertEqual(observations[.white]?.count, 1)
+        XCTAssertEqual(observations[.white]?.contains(discovery), true)
+    }
 }

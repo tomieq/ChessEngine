@@ -13,17 +13,19 @@ public enum ChessObservation {
     case pinned(pinnedPiece: ChessPiece, attacker: ChessPiece, coveredPiece: ChessPiece)
     case freePiece(freePiece: ChessPiece, attacker: ChessPiece)
     case fork(victims: Set<ChessPiece>, attacker: ChessPiece)
+    case discoveredAttack(victim: ChessPiece, attacker: ChessPiece)
     case check(attackers: Set<ChessPiece>)
     case checkMate(attackers: Set<ChessPiece>)
     
     var simple: ChessSimpleObservation {
         switch self {
-        case .pinnedToKing: .pinnedToKing
-        case .pinned:       .pinned
-        case .freePiece:    .freePiece
-        case .fork:         .fork
-        case .check:        .check
-        case .checkMate:    .checkMate
+        case .pinnedToKing:     .pinnedToKing
+        case .pinned:           .pinned
+        case .freePiece:        .freePiece
+        case .fork:             .fork
+        case .discoveredAttack: .discoveredAttack
+        case .check:            .check
+        case .checkMate:        .checkMate
         }
     }
 }
@@ -33,6 +35,7 @@ public enum ChessSimpleObservation {
     case pinned
     case freePiece
     case fork
+    case discoveredAttack
     case check
     case checkMate
 }
@@ -48,6 +51,8 @@ extension ChessObservation {
             "fp-\(freePiece.id)-\(attacker.id)"
         case .fork(let victims, let attacker):
             "frk-\(Set(victims).hashValue)-\(attacker.id)"
+        case .discoveredAttack(let victim, let attacker):
+            "da-\(victim.id)-\(attacker.id)"
         case .check(let attackers):
             "c-\(Set(attackers).hashValue)"
         case .checkMate(let attackers):
