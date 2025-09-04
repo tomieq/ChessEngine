@@ -140,4 +140,37 @@ class ObservationsFactoryTests: MoveTests {
         XCTAssertEqual(observations[.white]?.count, 1)
         XCTAssertEqual(observations[.white]?.contains(discovery), true)
     }
+    
+    func testPawnNotPinnedByRook() throws {
+        let fen = "2kr3r/1pp2ppp/8/p7/P3P2P/2b1p3/4N1P1/2R2K1R w - a6 0 20"
+        let board = ChessBoard()
+        let loader = FenLoader(boardLoader: ChessBoardLoader(chessBoard: board))
+        try loader.load(fen: fen)
+        
+        let moveExecutor = ChessMoveExecutor(chessboard: board)
+        let commandFactory = ChessMoveCommandFactory(chessboard: board)
+        try moveExecutor.process(commandFactory.make(from: "c1", to: "c3"))
+        let analizer = ObservationsFactory(chessboard: board)
+        let observations = analizer.analize()
+        
+        let freePiece = ChessObservation.freePiece(freePiece: board["e3"]!, attacker: board["c3"]!)
+        XCTAssertEqual(observations[.white]?.count, 1)
+        XCTAssertEqual(observations[.white]?.contains(freePiece), true)
+    }
+
+    func testPawnPinnedByRook() throws {
+        let fen = "2kr3r/1pp2ppp/3B4/p7/P3P2P/2R1p3/4N1P1/5K1R b - - 0 20"
+        let board = ChessBoard()
+        let loader = FenLoader(boardLoader: ChessBoardLoader(chessBoard: board))
+        try loader.load(fen: fen)
+        
+        let analizer = ObservationsFactory(chessboard: board)
+        let observations = analizer.analize()
+        
+        let freePiece = ChessObservation.freePiece(freePiece: board["e3"]!, attacker: board["c3"]!)
+        let pin = ChessObservation.pinnedToKing(pinnedPiece: board["c7"]!, attacker: board["c3"]!)
+        XCTAssertEqual(observations[.white]?.count, 2)
+        XCTAssertEqual(observations[.white]?.contains(freePiece), true)
+        XCTAssertEqual(observations[.white]?.contains(pin), true)
+    }
 }

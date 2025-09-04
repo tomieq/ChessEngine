@@ -96,6 +96,9 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
             }
         }
         
+        let pawn = PawnUtils(square: square, color: color)
+        let crawlingDirection = pawn.crawlingDirection
+
         var allowedDirections = MoveDirection.allCases
         // check if move is pinned and update defenders and attackers
         for direction in MoveDirection.allCases {
@@ -112,12 +115,20 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                        oppositeDirectionPiece.color == self.color,
                        oppositeDirectionPiece.type.weight > self.type.weight {
-                        logger.i("pawn at \(square) is pinned by \(piece), covered piece: \(oppositeDirectionPiece)")
+                        
+                        
                         if oppositeDirectionPiece.type == .king {
                             allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
-                            observation = .pinnedToKing(pinnedPiece: chessBoard[square]!, attacker: piece)
-                        } else if piece.type.weight < oppositeDirectionPiece.type.weight {
-                            observation = .pinned(pinnedPiece: chessBoard[square]!, attacker: piece, coveredPiece: oppositeDirectionPiece)
+                        }
+                        if direction == pawn.crawlingDirection, (pawn.attackedSquares.compactMap { chessBoard[$0] }.isEmpty) {
+                            // do not set pin, as pawn can crawl forward
+                        } else {
+                            logger.i("pawn at \(square) is pinned by \(piece), covered piece: \(oppositeDirectionPiece)")
+                            if oppositeDirectionPiece.type == .king {
+                                observation = .pinnedToKing(pinnedPiece: chessBoard[square]!, attacker: piece)
+                            } else if piece.type.weight < oppositeDirectionPiece.type.weight {
+                                observation = .pinned(pinnedPiece: chessBoard[square]!, attacker: piece, coveredPiece: oppositeDirectionPiece)
+                            }
                         }
                     }
                 }
@@ -133,8 +144,6 @@ class PawnMoveCalculator: MoveCalculator, MoveCalculatorProvider {
             possibleAttackers.append(enemyKing.square)
         }
         
-        let pawn = PawnUtils(square: square, color: color)
-        let crawlingDirection = pawn.crawlingDirection
 
         if allowedDirections.contains(crawlingDirection) {
             if let oneMove = square.move(crawlingDirection) {

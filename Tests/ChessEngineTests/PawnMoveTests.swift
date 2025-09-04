@@ -91,6 +91,22 @@ final class PawnMoveTests: MoveTests {
             .load(.black, "Ke8 Qe5")
         XCTAssertEqual(possibleMoves(from: "e2").count, 2)
     }
+    
+    func test_guardingKingCannotTake() {
+        ChessBoardLoader(chessBoard: chessBoard)
+            .load(.white, "Ke1 e2")
+            .load(.black, "Ke8 Qe5 Bd3")
+        XCTAssertEqual(possibleMoves(from: "e2").count, 2)
+    }
+    
+    func test_guardingKingCannotTakeEnPassant() {
+        ChessBoardLoader(chessBoard: chessBoard)
+            .load(.white, "Ke3 e5")
+            .load(.black, "Kh8 d5 Qe8")
+        chessBoard.possibleEnPassant = "d6"
+        XCTAssertEqual(possibleMoves(from: "e5").count, 1)
+        XCTAssertEqual(possibleMoves(from: "e5").first, "e6")
+    }
 
     func test_defendKing() {
         ChessBoardLoader(chessBoard: chessBoard)

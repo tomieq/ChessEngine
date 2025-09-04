@@ -21,6 +21,10 @@ struct PawnUtils {
             return [.downLeft, .downRight]
         }
     }
+    
+    var attackedSquares: [BoardSquare] {
+        attackDirections.compactMap { square.move($0) }
+    }
 
     var isAtStartingSquare: Bool {
         square == startingSquare
