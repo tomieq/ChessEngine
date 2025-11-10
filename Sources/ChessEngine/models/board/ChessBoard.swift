@@ -14,7 +14,7 @@ public class ChessBoard {
     private let logger = L(ChessBoard.self)
     var possibleEnPassant: BoardSquare?
     public var colorOnMove: ChessPieceColor = .white
-    private var pieces: [ChessPiece]
+    private var pieces: [BoardSquare: ChessPiece]
     private var listeners: [String: (ChessBoardEvent) -> Void] = [:]
     public var movesHistory: [ChessMove] = []
     public var pgn: [String] {
@@ -25,15 +25,18 @@ public class ChessBoard {
     }
 
     public var allPieces: [ChessPiece] {
-        self.pieces
+        self.pieces.map{ $0.value }
     }
 
     public init() {
-        self.pieces = []
+        self.pieces = [:]
     }
 
     private init(pieces: [ChessPiece]) {
-        self.pieces = pieces
+        self.pieces = [:]
+        for piece in pieces {
+            self.pieces[piece.square] = piece
+        }
     }
 
     public func controlledSquares(by color: ChessPieceColor) -> [BoardSquare] {
@@ -69,26 +72,30 @@ public class ChessBoard {
     }
     
     func remove(_ square: BoardSquare, _ mode: ChessMoveMode = .normal) {
-        self.pieces = self.pieces.filter{ $0.square != square }
+        guard self.pieces[square].notNil else { return }
+        self.pieces[square] = nil
         broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: [square]), mode: mode))
     }
     
     func remove(_ squares: BoardSquare..., mode: ChessMoveMode = .normal) {
-        self.pieces = self.pieces.filter{ !squares.contains($0.square) }
+        for square in squares {
+            self.pieces[square] = nil
+        }
         broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: squares), mode: mode))
     }
 
     func move(_ move: ChessBoardMove, _ mode: ChessMoveMode = .normal) {
         guard let movedPiece = piece(at: move.from)?.moved(to: move.to) else { return }
-        pieces.removeAll { [move.to, move.from].contains($0.square) }
-        pieces.append(movedPiece)
+        pieces[move.to] = nil
+        pieces[move.from] = nil
+        pieces[movedPiece.square] = movedPiece
         broadcast(event: ChessBoardEvent(change: .pieceMoved(move), mode: mode))
         possibleEnPassant = nil
     }
     
     private func addPiece(_ piece: GamePiece?, emitChanges: Bool = true, _ mode: ChessMoveMode = .normal) {
         if let chessPiece = piece?.chessPiece(chessBoard: self) {
-            self.pieces.append(chessPiece)
+            self.pieces[chessPiece.square] = chessPiece
             if emitChanges {
                 broadcast(event: ChessBoardEvent(change: .pieceAdded(at: [chessPiece.square]), mode: mode))
             }
@@ -96,7 +103,8 @@ public class ChessBoard {
     }
 
     func piece(at square: BoardSquare?) -> ChessPiece? {
-        self.pieces.first{ $0.square == square }
+        guard let square else { return nil }
+        return self.pieces[square]
     }
     
     public subscript(square: BoardSquare?) -> ChessPiece? {
@@ -112,7 +120,7 @@ public class ChessBoard {
     }
 
     func king(color: ChessPieceColor) -> ChessPiece? {
-        self.pieces.first { $0.type == .king && $0.color == color }
+        self.pieces.first { $0.value.type == .king && $0.value.color == color }?.value
     }
 
     func isInCheck(_ color: ChessPieceColor) -> Bool {
@@ -146,7 +154,7 @@ public class ChessBoard {
     }
 
     func isFree(_ square: BoardSquare) -> Bool {
-        !self.pieces.contains{ $0.square == square }
+        self.pieces[square].isNil
     }
 
     @discardableResult
@@ -161,12 +169,12 @@ public class ChessBoard {
             .load(.white, "a2 b2 c2 d2 e2 f2 g2 h2")
             .load(.black, "Ra8 Nb8 Bc8 Qd8 Ke8 Bf8 Ng8 Rh8")
             .load(.black, "a7 b7 c7 d7 e7 f7 g7 h7")
-        broadcast(event: ChessBoardEvent(change: .pieceAdded(at: pieces.map { $0.square }), mode: .normal))
+        broadcast(event: ChessBoardEvent(change: .pieceAdded(at: pieces.map { $0.value.square }), mode: .normal))
         return self
     }
     
     public func removeAllPieces() {
-        let occupiedSquares = pieces.map { $0.square }
+        let occupiedSquares = pieces.map { $0.value.square }
         pieces.removeAll()
         colorOnMove = .white
         movesHistory = []
@@ -174,13 +182,13 @@ public class ChessBoard {
     }
 
     public func getPieces(color: ChessPieceColor) -> [ChessPiece] {
-        self.pieces.filter{ $0.color == color }
+        self.pieces.filter{ $0.value.color == color }.map{ $0.value }
     }
 
     public func dump(color: ChessPieceColor) -> String {
         self.pieces
-            .filter{ $0.color == color }
-            .map { "\($0.type.enLetter)\($0.square)" }
+            .filter{ $0.value.color == color }
+            .map { "\($0.value.type.enLetter)\($0.value.square)" }
             .joined(separator: " ")
     }
 }
@@ -191,7 +199,7 @@ extension ChessBoard {
         board.colorOnMove = self.colorOnMove
         board.movesHistory = self.movesHistory
         self.pieces.map {
-            $0.gamePiece
+            $0.value.gamePiece
         }.forEach {
             board.add($0)
         }
