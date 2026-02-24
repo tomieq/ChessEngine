@@ -28,12 +28,14 @@ public class ChessMoveExecutor {
         case .move(let move, let promotion):
             logger.i("\(color) moves \(chessboard[move.from]!.type) \(move)")
             var changes: [ChessMove.Change] = []
+            var moveType: ChessMove.MoveType = .regular
             // with promotion
             if let promotedType = promotion {
                 let pawnID = chessboard[move.from]?.id
                 // build changes
                 changes.append(.remove(.pawn, color, from: move.from))
                 changes.append(.add(promotedType, color, to: move.to))
+                moveType = .promotion
                 // update the local board
                 chessboard.remove(move.from)
                 chessboard.add(promotedType.gamePiece(color: color, square: move.to, id: pawnID))
@@ -57,10 +59,13 @@ public class ChessMoveExecutor {
                                notation: self.notationFactory.make(from: command),
                                changes: changes,
                                status: chessboard.status,
+                               moveType: moveType,
                                movedPieces: chessboard[move.to]?.frozen.set ?? Set()))
         case .take(let move, let promotion):
             logger.i("\(chessboard[move.from]!.color) \(chessboard[move.from]!.type) from \(move.from) takes \(chessboard[move.to]!.type) on \(move.to)")
             var changes: [ChessMove.Change] = []
+            var moveType: ChessMove.MoveType = .take
+
             if let removedPiece = chessboard[move.to] {
                 changes.append(.remove(removedPiece.type, removedPiece.color, from: move.to))
             }
@@ -69,6 +74,7 @@ public class ChessMoveExecutor {
                 // build changes
                 changes.append(.remove(.pawn, color, from: move.from))
                 changes.append(.add(promotedType, color, to: move.to))
+                moveType = .promotion
                 // update the local board
                 chessboard.remove(move.to, move.from)
                 chessboard.add(promotedType.gamePiece(color: chessboard.colorOnMove, square: move.to, id: pawnID))
@@ -83,6 +89,7 @@ public class ChessMoveExecutor {
                                notation:  self.notationFactory.make(from: command),
                                changes: changes,
                                status: chessboard.status,
+                               moveType: moveType,
                                movedPieces: chessboard[move.to]?.frozen.set ?? Set()))
 
         case .castling(let castling):
@@ -93,6 +100,7 @@ public class ChessMoveExecutor {
                                notation:  self.notationFactory.make(from: command),
                                changes: castling.moves.map { .move($0) },
                                status: chessboard.status,
+                               moveType: .castling,
                                movedPieces: Set(castling.moves.compactMap{ chessboard[$0.to]?.frozen })))
         case .enPassant(let move, let takenSquare):
             chessboard.move(move)
@@ -101,6 +109,7 @@ public class ChessMoveExecutor {
                                notation:  self.notationFactory.make(from: command),
                                changes: [.move(move), .remove(.pawn, color.other, from: takenSquare)],
                                status: chessboard.status,
+                               moveType: .take,
                                movedPieces: chessboard[move.to]?.frozen.set ?? Set()))
         }
         chessboard.colorOnMove = chessboard.colorOnMove.other
@@ -142,6 +151,7 @@ public class ChessMoveExecutor {
                                     notation: move.notation,
                                     changes: revertedChanges,
                                     status: move.status,
+                                    moveType: .regular,
                                     movedPieces: move.movedPieces)
         moveListener?(reverseMove)
     }

@@ -11,10 +11,17 @@ public struct ChessMove {
         case remove(ChessPieceType, ChessPieceColor, from: BoardSquare)
         case add(ChessPieceType, ChessPieceColor, to: BoardSquare)
     }
+    public enum MoveType {
+        case regular
+        case take
+        case promotion
+        case castling
+    }
     public let color: ChessPieceColor
     public let notation: String
     public let changes: [Change]
     public let status: ChessGameStatus
+    public let moveType: MoveType
     public let movedPieces: Set<ChessPiece> // pieces are on their new squares
 }
 
