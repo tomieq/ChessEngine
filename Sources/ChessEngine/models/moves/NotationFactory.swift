@@ -5,15 +5,15 @@
 //  Created by Tomasz Kucharski on 07/08/2024.
 //
 
-class NotationFactory {
+public final class NotationFactory {
     let chessBoard: ChessBoard
     
-    init(chessBoard: ChessBoard) {
+    public init(chessBoard: ChessBoard) {
         self.chessBoard = chessBoard
     }
     
     // notation is composed for move that had already had place - pieces are in new places
-    func make(from command: ChessMoveCommand) -> String {
+    public func make(from command: ChessMoveCommand) -> String {
         var notation = ""
         switch command {
         case .move(let move, let promotion):
