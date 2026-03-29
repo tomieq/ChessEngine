@@ -15,7 +15,7 @@ public class ChessMoveExecutor {
     private let logger = L(ChessMoveExecutor.self)
     let chessboard: ChessBoard
     public var moveListener: ((ChessMove) -> Void)?
-    let notationFactory: NotationFactory
+    public let notationFactory: NotationFactory
     
     public init(chessboard: ChessBoard) {
         self.chessboard = chessboard
