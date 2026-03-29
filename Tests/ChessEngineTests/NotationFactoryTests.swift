@@ -59,4 +59,25 @@ class NotationFactoryTests: XCTestCase {
         XCTAssertEqual(chessBoard.pgn.last, "axb1=R")
         XCTAssertEqual(chessBoard["b1"]?.id, pawnID)
     }
+    
+    func test_rookPromotionBeforeMove() throws {
+        let commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let boardLoader = ChessBoardLoader(chessBoard: chessBoard)
+        let fenLoader = FenLoader(boardLoader: boardLoader)
+        try fenLoader.load(fen: "6k1/4B3/8/K5P1/8/8/p7/1R6 b - - 0 3")
+        let command = try commandFactory.make(from: "a2", to: "b1", promotedType: .rook)
+        let notationFactory = NotationFactory(chessBoard: chessBoard)
+        XCTAssertEqual(notationFactory.make(from: command, moveAlreadyPerformed: false), "axb1=R")
+    }
+    
+    func test_nightMoveCalculateBeforeMove() throws {
+        let commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let boardLoader = ChessBoardLoader(chessBoard: chessBoard)
+        let fenLoader = FenLoader(boardLoader: boardLoader)
+        try fenLoader.load(fen: "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4")
+        
+        let command = try commandFactory.make(from: "b1", to: "c3", promotedType: nil)
+        let notationFactory = NotationFactory(chessBoard: chessBoard)
+        XCTAssertEqual(notationFactory.make(from: command, moveAlreadyPerformed: false), "Nc3")
+    }
 }

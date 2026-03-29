@@ -13,13 +13,13 @@ public final class NotationFactory {
     }
     
     // notation is composed for move that had already had place - pieces are in new places
-    public func make(from command: ChessMoveCommand) -> String {
+    public func make(from command: ChessMoveCommand, moveAlreadyPerformed: Bool = true) -> String {
         var notation = ""
         switch command {
         case .move(let move, let promotion):
             if promotion.notNil {
                 notation.append(move.from.column.letter.description)
-            } else if let piece = chessBoard[move.to] {
+            } else if let piece = chessBoard[moveAlreadyPerformed ? move.to : move.from] {
                 notation.append(piece.type.enLetter)
                 let otherSameTypePiece = chessBoard
                     .getPieces(color: piece.color)
