@@ -80,4 +80,15 @@ class NotationFactoryTests: XCTestCase {
         let notationFactory = NotationFactory(chessBoard: chessBoard)
         XCTAssertEqual(notationFactory.make(from: command, moveAlreadyPerformed: false), "Nc3")
     }
+    
+    func test_bishopTakesBeforeMove() throws {
+        let commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let boardLoader = ChessBoardLoader(chessBoard: chessBoard)
+        let fenLoader = FenLoader(boardLoader: boardLoader)
+        try fenLoader.load(fen: "r1bqk1nr/pppp1ppp/2n5/2b5/2B1P3/2p2N2/PP3PPP/RNBQK2R w KQkq - 0 6")
+        
+        let command = try commandFactory.make(from: "c4", to: "f7", promotedType: nil)
+        let notationFactory = NotationFactory(chessBoard: chessBoard)
+        XCTAssertEqual(notationFactory.make(from: command, moveAlreadyPerformed: false), "Bxf7")
+    }
 }

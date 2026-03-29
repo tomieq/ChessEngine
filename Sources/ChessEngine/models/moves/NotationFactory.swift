@@ -43,7 +43,7 @@ public final class NotationFactory {
         case .take(let move, let promotion):
             if promotion.notNil {
                 notation.append(move.from.column.letter.description)
-            } else if let piece = chessBoard[move.to] {
+            } else if let piece = chessBoard[moveAlreadyPerformed ? move.to : move.from] {
                 switch piece.type {
                 case .pawn:
                     notation.append(move.from.column.letter.description)
